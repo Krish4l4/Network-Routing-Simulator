@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, send
+from Algorithms import *
 
 
 app = Flask(__name__)
@@ -10,10 +11,26 @@ socketio = SocketIO(app)
 def index():
     return render_template('index.html')
 
-@socketio.on('message')
-def handle_message(msg1, msg2):
-    print(msg1)
-    print(msg2)
+@socketio.on('connect')
+def handle_connect():
+    print("Connected")
+
+@socketio.on('disconnect')
+def handel_disconnect():
+    print("Disconnected")
+
+@socketio.on('process_dijkstra')
+def handle_dijkstra(data):
+    print(data)
+    G = Graph()
+
+    for edge in data:
+        start = edge["start"]
+        end = edge["end"]
+        weight = edge["weight"]
+        G.add_edge(str(start), str(end), weight)
+    print(G.shortest_path("0","1"))
+
 
 
 # @app.route('/process-dijkstra', methods=['POST'])
