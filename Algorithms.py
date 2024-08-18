@@ -1,5 +1,9 @@
 from flask_socketio import emit, socketio
 
+global steps
+steps = []
+
+
 class Graph:
     def __init__(self, graph: dict ={}):
         self.graph = graph # A dictionary for the adjaceny list
@@ -103,22 +107,17 @@ def Dijkstra(graph, source):
                 pq.insert(neighbor, distance)
                 predecessors[neighbor] = current_node
                 print(distances, predecessors)
-                
-    emit('server',{'dist':distances, 'pre':predecessors})
+                steps.append({'currentNode': current_node,'neighbor': neighbor,'dist': distances, 'pre': predecessors})
+ 
+    # emit('server',{'dist':distances, 'pre':predecessors})
     return distances, predecessors
+
+
+g = Graph()
+g.add_edge('0','1',12)
+g.add_edge('0','2',3)
+g.add_edge('1','2',3)
+
+print(g.shortest_path('0','1'))
+print(steps)
         
-
-
-
-# graph = {
-#    "0": {"1": 12},
-#    "1": {"2":1},
-#    "2": {"0":13}
-# }
-# G = Graph(graph=graph)
-# print(G.shortest_path("0","2"))
-
-
-
-
-
