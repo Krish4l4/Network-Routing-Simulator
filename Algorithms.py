@@ -7,7 +7,10 @@ steps = []
 class Graph:
     def __init__(self, graph: dict ={}):
         self.graph = graph # A dictionary for the adjaceny list
-    
+
+    def reset(self):
+        self.graph = {}
+
     def add_edge(self, node1, node2, weight):
         if node1 not in self.graph: #Check if the node is already added
             self.graph[node1] ={} # If not, create the node
@@ -16,6 +19,8 @@ class Graph:
         if node2 not in self.graph:
             self.graph[node2]={}
         self.graph[node2][node1] = weight
+
+        print(self.graph)
 
     def shortest_path(self, source:str, target:str):
         _, predecessors = Dijkstra(self.graph, source)
@@ -107,17 +112,18 @@ def Dijkstra(graph, source):
                 pq.insert(neighbor, distance)
                 predecessors[neighbor] = current_node
                 print(distances, predecessors)
-                steps.append({'currentNode': current_node,'neighbor': neighbor,'dist': distances, 'pre': predecessors})
+                steps.append({'currentNode': current_node,'neighbor': neighbor,'dist': distances.copy(), 'pre': predecessors.copy()})
  
     # emit('server',{'dist':distances, 'pre':predecessors})
     return distances, predecessors
 
 
-g = Graph()
-g.add_edge('0','1',12)
-g.add_edge('0','2',3)
-g.add_edge('1','2',3)
+# g = Graph()
+# g.add_edge('0','1',12)
+# g.add_edge('0','2',3)
+# g.add_edge('2','1',2)
 
-print(g.shortest_path('0','1'))
-print(steps)
+
+# print(g.shortest_path('0','1'))
+# print(steps)
         
