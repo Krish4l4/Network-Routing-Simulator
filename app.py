@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit
+import time
 from Algorithms import *
 
 app = Flask(__name__)
@@ -38,11 +39,12 @@ def handle_dijkstra(dataValues):
 @socketio.on('step')
 def get_step():
     global current_step
-    print(steps) # clears steps of pervious things
 
-    if(current_step < len(steps)):
-        print(current_step)
-        print(steps[current_step]['dist'], steps[current_step]['pre'])
+    if(current_step < len(steps) ):
+        for key,value in steps[current_step]['dist'].items():
+            if( value == float('inf')):
+                steps[current_step]['dist'][key]= "inf"
+
         emit('server',{'dist':steps[current_step]['dist'], 'pre':steps[current_step]['pre']})
         current_step+=1
 
@@ -50,6 +52,10 @@ def get_step():
 def handle_clear():
     steps.clear() # clears steps of pervious things
 
+@socketio.on_error_default
+def default_error_handler(e):
+    print(e)
+
 if __name__ == '__main__':
     print("Starting server..")
-    socketio.run(app, allow_unsafe_werkzeug=True,port=80,debug=True)
+    socketio.run(app, allow_unsafe_werkzeug=True,port=80,debug=True, log_output=True)

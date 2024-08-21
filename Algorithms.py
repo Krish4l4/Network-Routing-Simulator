@@ -114,7 +114,7 @@ def Dijkstra(graph, source):
                 print(distances, predecessors)
                 steps.append({'currentNode': current_node,'neighbor': neighbor,'dist': distances.copy(), 'pre': predecessors.copy()})
  
-    # emit('server',{'dist':distances, 'pre':predecessors})
+    print(steps)
     return distances, predecessors
 
 
