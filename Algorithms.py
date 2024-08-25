@@ -121,9 +121,8 @@ def Dijkstra(graph, source):
 # g = Graph()
 # g.add_edge('0','1',12)
 # g.add_edge('0','2',3)
-# g.add_edge('2','1',2)
+# g.add_edge('2','1',4)
 
 
 # print(g.shortest_path('0','1'))
-# print(steps)
         

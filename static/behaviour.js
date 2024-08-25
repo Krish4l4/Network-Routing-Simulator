@@ -19,10 +19,19 @@ function setup() {
     .getElementById("addEdgeBtn")
     .addEventListener("click", addEdgeViewer);
   document.getElementById("clear").addEventListener("click", clearCanvas);
-  document.getElementById("dijkstra").addEventListener("click", runDijkstra);
+  document.getElementById("dijkstra").addEventListener("click", function () {
+    if (edges.length == 0) {
+      alert("No Edges connected in graph");
+    } else {
+      runDijkstra();
+    }
+  });
   document
     .getElementById("stepAlgorithm")
     .addEventListener("click", stepUpdater);
+  document
+    .getElementById("exitAlgorithm")
+    .addEventListener("click", exitSimulation);
 }
 
 function draw() {
@@ -171,9 +180,26 @@ function generateTable(source) {
 }
 
 function runDijkstra() {
-  document.getElementById("stepAlgorithm").style.display = "block";
-  let source = parseInt(prompt("Enter source node"));
-  let destination = parseInt(prompt("Enter destination node"));
+  document.getElementById("stepAlgorithm").style.display = "inline";
+  document.getElementById("exitAlgorithm").style.display = "inline";
+  disableChild = document
+    .getElementById("upperButtons")
+    .children.forEach((child) => {
+      child.setAttribute("disabled", "");
+    });
+
+  let source;
+  let destination;
+  do {
+    source = parseInt(prompt(`Enter source node: 0-${nodes.length - 1}`));
+  } while (isNaN(source));
+
+  do {
+    destination = parseInt(
+      prompt(`Enter destination node: 0-${nodes.length - 1}`)
+    );
+  } while (isNaN(destination));
+
   generateTable(source);
 
   socket = io();
@@ -191,30 +217,38 @@ function runDijkstra() {
   socket.on("server", function (msg) {
     console.log(msg);
 
-    table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
-    for (let i = 0; i < nodes.length; i++) {
-      if (msg.pre[i] == null) {
-        msg.pre[i] = "nil";
+    if (msg.data == "Stop") {
+      console.log("Closed Connection");
+      document.getElementById("stepAlgorithm").setAttribute("disabled", "");
+      socket.close();
+    } else {
+      table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
+      for (let i = 0; i < nodes.length; i++) {
+        if (msg.pre[i] == null) {
+          msg.pre[i] = "nil";
+        }
+        table += `<tr><td>${i}</td><td>${msg.dist[i]}</td><td>${msg.pre[i]}</td></tr>`;
       }
-      table += `<tr><td>${i}</td><td>${msg.dist[i]}</td><td>${msg.pre[i]}</td></tr>`;
+      document.getElementById("algorithmTable").innerHTML = table;
     }
-    document.getElementById("algorithmTable").innerHTML = table;
   });
 
   socket.on("disconnect", function (reason, details) {
     console.log("Disconnected from server");
     console.log(reason);
-    console.log(details.message);
-    console.log(details.description);
-    console.log(details.context);
   });
 }
 
 function stepUpdater() {
-  console.log("step called");
   socket.emit("step");
-  console.log("DOne something in step");
 }
 
-// bool condition for algo running or not , to stop user from adding nodes during execution
-//
+function exitSimulation() {
+  document.getElementById("algorithmTable").innerHTML = "";
+  document.getElementById("stepAlgorithm").removeAttribute("disabled");
+  document
+    .getElementById("upperButtons")
+    .children.forEach((child) => child.removeAttribute("disabled"));
+  document.getElementById("stepAlgorithm").style.display = "none";
+  document.getElementById("exitAlgorithm").style.display = "none";
+}
