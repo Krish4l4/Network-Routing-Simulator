@@ -1,8 +1,16 @@
+/*
+ nodes[] : nodes[{x,y}] represents x-postion and y-postion in canvas, and node's name 
+ edges[] : edges[{start, end, weight}] represents start node,end node and weight of edge
+ draggindNode: to track if a node in dragged
+*/
 let nodes = [];
 let edges = [];
 let draggingNode = null;
 let socket;
 let table;
+let algo = "Not Running";
+let currentNode;
+let neighbourNode;
 
 function setup() {
   createCanvas(720, 480);
@@ -30,12 +38,24 @@ function draw() {
 
   //iterativley draw edges
   for (let i = 0; i < edges.length; i++) {
-    let n1 = nodes[edges[i].start];
-    let n2 = nodes[edges[i].end];
+    var n1 = nodes[edges[i].start];
+    var n2 = nodes[edges[i].end];
 
     stroke(0);
     strokeWeight(3);
-    fill(0);
+    if (
+      algo == "Running" &&
+      ((n1.name == currentNode && n2.name == neighbourNode) ||
+        (n1.name == neighbourNode && n2.name == currentNode))
+    ) {
+      stroke(231, 76, 60);
+      edges[i].visited = true;
+    } else if (edges[i].visited == true) {
+      stroke(231, 76, 60);
+    } else {
+      stroke(0);
+    }
+
     line(n1.x, n1.y, n2.x, n2.y);
 
     noStroke();
@@ -48,7 +68,26 @@ function draw() {
   for (let i = 0; i < nodes.length; i++) {
     stroke(0);
     strokeWeight(2);
-    fill(255);
+
+    /**
+     * If node is dragged use green-like color
+     * else, use default node color
+     */
+    if (dist(mouseX, mouseY, nodes[i].x, nodes[i].y) < 20 && mouseIsPressed) {
+      fill(159, 226, 191); // green-like color
+      ellipse(nodes[i].x, nodes[i].y, 40, 40);
+    } else {
+      if (algo == "Running" && nodes[i].name == currentNode) {
+        fill(231, 76, 60);
+        nodes[i].visited = true;
+      } else if (algo == "Running" && nodes[i].name == neighbourNode) {
+        fill(241, 196, 15);
+      } else if (nodes[i].visited == true) {
+        fill(231, 76, 60);
+      } else {
+        fill(255);
+      }
+    }
     ellipse(nodes[i].x, nodes[i].y, 40, 40);
     fill(0);
     textSize(18);
@@ -79,7 +118,7 @@ function addNode() {
   }
 
   var valueOfNode = nodes.length;
-  nodes.push({ x: x, y: y, name: valueOfNode });
+  nodes.push({ x: x, y: y, name: valueOfNode, visited: false });
 }
 
 /**
@@ -138,6 +177,7 @@ function addEdge(start, end, weight) {
       start: parseInt(start),
       end: parseInt(end),
       weight: parseInt(weight),
+      visited: false,
     });
   }
   document.getElementById("myForm").style.display = "none";
@@ -177,6 +217,9 @@ function runDijkstra() {
   let destination = parseInt(prompt("Enter destination node"));
   generateTable(source);
 
+  // algo variable initilized as connection is properly validated
+  algo = "Running";
+
   socket = io();
   socket.on("connect", function () {
     console.log("Connected to server");
@@ -190,8 +233,8 @@ function runDijkstra() {
   // event sent by server
   socket.on("server", function (msg) {
     console.log(msg);
-    console.log(msg.dist);
-    console.log(msg.pre);
+    currentNode = msg.current_node;
+    neighbourNode = msg.neighbor;
 
     table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
     for (let i = 0; i < nodes.length; i++) {
@@ -208,8 +251,22 @@ function runDijkstra() {
 function stepUpdater() {
   console.log("step called");
   socket.emit("step");
-  console.log("DOne something in step");
 }
 
-// bool condition for algo running or not , to stop user from adding nodes during execution
-//
+function exitSimulation() {
+  document.getElementById("algorithmTable").innerHTML = "";
+  document.getElementById("stepAlgorithm").removeAttribute("disabled");
+  document
+    .getElementById("upperButtons")
+    .children.forEach((child) => child.removeAttribute("disabled"));
+  document.getElementById("stepAlgorithm").style.display = "none";
+  document.getElementById("exitAlgorithm").style.display = "none";
+
+  // reset values of variables
+  algo = "Not Running";
+  currentNode = null;
+  neighbourNode = null;
+
+  nodes.forEach((node) => (node.visited = false));
+  edges.forEach((edge) => (edge.visited = false));
+}
