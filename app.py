@@ -50,6 +50,18 @@ def get_step():
 def handle_clear():
     steps.clear() # clears steps of pervious things
 
+<<<<<<< HEAD
+=======
+    global current_step
+    current_step = 0
+    global path
+    path = []
+
+@socketio.on_error_default
+def default_error_handler(e):
+    print(e)
+
+>>>>>>> a26c760 (Completed till Dijkstra's (all) ,can be changes in highlights)
 if __name__ == '__main__':
     print("Starting server..")
     socketio.run(app, allow_unsafe_werkzeug=True,port=80,debug=True)

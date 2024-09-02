@@ -36,7 +36,13 @@ function setup() {
 function draw() {
   background(230);
 
-  //iterativley draw edges
+  if (algo == "Running") {
+    frameRate(24);
+  } else {
+    frameRate(60);
+  }
+
+  // iteratively draw edges
   for (let i = 0; i < edges.length; i++) {
     var n1 = nodes[edges[i].start];
     var n2 = nodes[edges[i].end];
@@ -48,7 +54,8 @@ function draw() {
       ((n1.name == currentNode && n2.name == neighbourNode) ||
         (n1.name == neighbourNode && n2.name == currentNode))
     ) {
-      stroke(231, 76, 60);
+      // stroke(231, 76, 60);
+      stroke(abs(231 * cos(frameCount * 0.1)), 76, 60);
       edges[i].visited = true;
     } else if (edges[i].visited == true) {
       stroke(231, 76, 60);
@@ -81,9 +88,21 @@ function draw() {
         fill(231, 76, 60);
         nodes[i].visited = true;
       } else if (algo == "Running" && nodes[i].name == neighbourNode) {
-        fill(241, 196, 15);
+        // fill(241, 196, 15); // yellow like color
+        fill(255, 255, abs(230 * cos(frameCount * 0.1)));
+      } else if (algo == "Final") {
+        for (let z = 0; z < shortestPath.length; z++) {
+          if (nodes[i].name == shortestPath[z]) {
+            fill(34, 153, 84);
+            nodes[i].finalpath = true;
+            break;
+          }
+        }
+        if (nodes[i].finalpath == false) {
+          fill(255);
+        }
       } else if (nodes[i].visited == true) {
-        fill(231, 76, 60);
+        fill(226, 102, 88); // red
       } else {
         fill(255);
       }
@@ -212,9 +231,30 @@ function generateTable(source) {
 }
 
 function runDijkstra() {
-  document.getElementById("stepAlgorithm").style.display = "block";
-  let source = parseInt(prompt("Enter source node"));
-  let destination = parseInt(prompt("Enter destination node"));
+  // clear some case if they occur
+  document.getElementById("myForm").style.display = "none";
+  document.getElementById("err").innerHTML = "";
+
+  document.getElementById("stepAlgorithm").style.display = "inline";
+  document.getElementById("exitAlgorithm").style.display = "inline";
+  disableChild = document
+    .getElementById("upperButtons")
+    .children.forEach((child) => {
+      child.setAttribute("disabled", "");
+    });
+
+  let source;
+  let destination;
+  do {
+    source = parseInt(prompt(`Enter source node: 0-${nodes.length - 1}`));
+  } while (isNaN(source));
+
+  do {
+    destination = parseInt(
+      prompt(`Enter destination node: 0-${nodes.length - 1}`)
+    );
+  } while (isNaN(destination));
+
   generateTable(source);
 
   // algo variable initilized as connection is properly validated
@@ -254,6 +294,11 @@ function stepUpdater() {
 }
 
 function exitSimulation() {
+  if (socket) {
+    socket.emit("clearValues");
+    socket.close();
+  }
+
   document.getElementById("algorithmTable").innerHTML = "";
   document.getElementById("stepAlgorithm").removeAttribute("disabled");
   document
