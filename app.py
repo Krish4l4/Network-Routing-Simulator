@@ -50,8 +50,6 @@ def get_step():
 def handle_clear():
     steps.clear() # clears steps of pervious things
 
-<<<<<<< HEAD
-=======
     global current_step
     current_step = 0
     global path
