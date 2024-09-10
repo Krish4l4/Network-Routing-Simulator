@@ -15,6 +15,18 @@
     />
   </head>
   <body>
+    <!-- <div id="statedenoterButton">
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        id="undirectedButton"
+      >
+        Undirected graph
+      </button>
+      <button type="button" class="btn btn-outline-primary" id="directedButton">
+        Directed graph
+      </button>
+    </div> -->
     <div id="canvasContainer">
       <form
         method="post"
@@ -87,6 +99,11 @@
     <script src="{{url_for('static',filename='p5/p5.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap-5.3.3-dist/js/bootstrap.min.js')}}"></script>
     <script src="{{url_for('static', filename = 'socket-io/socket.io.min.js')}}"></script>
+    <script src="{{url_for('static',filename='addNode.js')}}"></script>
+    <script src="{{url_for('static',filename='addEdge.js')}}"></script>
+    <script src="{{url_for('static',filename='dijkstra.js')}}"></script>
+    <script src="{{url_for('static',filename='bellman_ford.js')}}"></script>
+    <script src="{{url_for('static',filename='socket.js')}}"></script>
     <script src="{{url_for('static',filename='behaviour.js')}}"></script>
   </body>
 </html>

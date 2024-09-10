@@ -39,6 +39,20 @@ def handle_dijkstra(dataValues):
     path = G.shortest_path(str(dataValues['source']),str(dataValues['destination']))
     print(path)
 
+@socketio.on('process_bellmanFord')
+def handle_dijkstra(dataValues):
+    print(dataValues)
+    G = Graph()
+    G.reset()
+
+    for edge in dataValues['edges']:
+        start = edge["start"]
+        end = edge["end"]
+        weight = edge["weight"]
+        G.add_edge(str(start), str(end), weight)
+    global path
+    path = G.bellman_calculation(str(dataValues['source']))
+    print(path)
 
 @socketio.on('step')
 def get_step():
