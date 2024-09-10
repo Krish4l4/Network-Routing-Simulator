@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network Routing Simulator</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="stylesheet"
+      href="./bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="./bootstrap-5.3.3-dist/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div id="canvasContainer">
+      
+    </div>
+
+    <div class="buttons_list initialButtons" id="upperButtons">
+      <button id="addNodeBtn" class="btn btn-outline-primary">Add Node</button>
+      <button id="addEdgeBtn" class="btn btn-outline-primary">Add Edge</button>
+      <button class="btn btn-outline-primary" id="dijkstra">
+        Run Dijkstra
+      </button>
+      <button class="btn btn-outline-primary" id="bellman-ford">
+        Run Bellman-Ford
+      </button>
+      <button class="btn btn-outline-primary" id="clear">Clear</button>
+    </div>
+
+    
+
+    <script src="./p5/p5.min.js"></script>
+    <script src="./bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+    <script src="./behaviour.js"></script>
+  </body>
+</html>
