@@ -58,18 +58,18 @@ function setup() {
     .getElementById("exitAlgorithm")
     .addEventListener("click", exitSimulation);
 
-  // document
-  //   .getElementById("undirectedButton")
-  //   .addEventListener("click", function () {
-  //     console.log("Undirected");
-  //     stateChoosen = "Undirected";
-  //   });
-  // document
-  //   .getElementById("directedButton")
-  //   .addEventListener("click", function () {
-  //     console.log("Directed");
-  //     stateChoosen = "Directed";
-  //   });
+  document
+    .getElementById("undirectedButton")
+    .addEventListener("click", function () {
+      console.log("Undirected Graph");
+      stateChoosen = "Undirected";
+    });
+  document
+    .getElementById("directedButton")
+    .addEventListener("click", function () {
+      console.log("Directed Graph");
+      stateChoosen = "Directed";
+    });
 }
 
 function draw() {
@@ -116,6 +116,21 @@ function draw() {
     }
 
     line(n1.x, n1.y, n2.x, n2.y);
+
+    if (stateChoosen == "Directed") {
+      // arrow make
+      push();
+      var angleOfLine = atan2(n1.y - n2.y, n1.x - n2.x);
+      translate(n2.x, n2.y); // translate to end node
+      rotate(angleOfLine - HALF_PI); // rotates the arrow point
+      /**
+       * Upper Point towards the end node is (0,22)
+       * and left right point are (-4,30) and (4,30)
+       */
+      triangle(-4, 30, 4, 30, 0, 22);
+
+      pop();
+    }
 
     noStroke();
     fill(0);
@@ -238,6 +253,9 @@ function exitSimulation() {
   document.getElementById("stepAlgorithm").removeAttribute("disabled");
   document
     .getElementById("upperButtons")
+    .children.forEach((child) => child.removeAttribute("disabled"));
+  document
+    .getElementById("stateDenoterButton")
     .children.forEach((child) => child.removeAttribute("disabled"));
   document.getElementById("stepAlgorithm").style.display = "none";
   document.getElementById("exitAlgorithm").style.display = "none";

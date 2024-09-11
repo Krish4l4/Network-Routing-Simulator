@@ -27,7 +27,12 @@ def handle_disconnect():
 @socketio.on('process_dijkstra')
 def handle_dijkstra(dataValues):
     print(dataValues)
-    G = Graph()
+
+    if(dataValues['state'] == 'Undirected'):
+        G = Graph()
+    elif(dataValues['state']=='Directed'):
+        G = DirectedGraph()
+    
     G.reset()
 
     for edge in dataValues['edges']:
@@ -39,11 +44,15 @@ def handle_dijkstra(dataValues):
     path = G.shortest_path(str(dataValues['source']),str(dataValues['destination']))
     print(path)
 
+
 @socketio.on('process_bellmanFord')
 def handle_dijkstra(dataValues):
     print(dataValues)
-    G = Graph()
-    G.reset()
+
+    if(dataValues['state'] == 'Undirected'):
+        G = Graph()
+    elif(dataValues['state']=='Directed'):
+        G = DirectedGraph()
 
     for edge in dataValues['edges']:
         start = edge["start"]
@@ -53,6 +62,8 @@ def handle_dijkstra(dataValues):
     global path
     path = G.bellman_calculation(str(dataValues['source']))
     print(path)
+
+
 
 @socketio.on('step')
 def get_step():

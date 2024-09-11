@@ -43,6 +43,43 @@ class Graph:
         distances, predecessor = BellmanFord(self.graph, source)
         path = []
 
+class DirectedGraph:
+    def __init__(self, graph: dict ={}):
+        self.graph = graph 
+
+    def reset(self):
+        self.graph = {}
+
+    def add_edge(self, node1, node2, weight):
+        if node1 not in self.graph: 
+            self.graph[node1] ={} 
+        self.graph[node1][node2] = weight
+    
+        if node2 not in self.graph:
+            self.graph[node2]={}
+
+        print(self.graph)
+
+    def shortest_path(self, source:str, target:str):
+        _, predecessors = Dijkstra(self.graph, source)
+
+        path = []
+        current_node = target
+
+        while current_node:
+            path.append(current_node)
+            current_node = predecessors[current_node]
+        path.reverse()
+
+        # This means that no connection is in path properly with respect to source
+        if len(path) == 1:
+            path = []
+            
+        return path
+    
+    def bellman_calculation(self, source: str):
+        distances, predecessor = BellmanFord(self.graph, source)
+        path = []
 
 class MinPriorityQueue:
     def __init__(self):
@@ -142,8 +179,6 @@ def BellmanFord(graph,source):
 
     distances[source] = 0
     
-    
-
     for vertex in graph.keys():
         for neighbor, weight in graph[vertex].items():
             distance = distances[vertex] + weight

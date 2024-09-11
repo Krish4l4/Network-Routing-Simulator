@@ -10,6 +10,10 @@ function runningAlgorithm(whichalgo) {
       child.setAttribute("disabled", "");
     });
 
+  document.getElementById("stateDenoterButton").children.forEach((child) => {
+    child.setAttribute("disabled", "");
+  });
+
   // algo variable initilized as connection is properly validated
   algo = "Running";
 

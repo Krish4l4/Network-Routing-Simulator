@@ -17,5 +17,6 @@ function runDijkstra() {
     edges: edges,
     source: source,
     destination: destination,
+    state: stateChoosen,
   });
 }
