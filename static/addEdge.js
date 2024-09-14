@@ -46,6 +46,9 @@ function addEdge(start, end, weight) {
       flag = 1;
     } else if (edges[i].start == end && edges[i].end == start) {
       edges[i].weight = weight;
+      // Change the edge array for directed approach
+      edges[i].start = start;
+      edges[i].end = end;
       flag = 1;
     }
   }
