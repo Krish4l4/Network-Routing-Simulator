@@ -14,12 +14,18 @@ function draw() {
 
   //iterativley draw edges
   for (let i = 0; i < edges.length; i++) {
-    console.log(edges.start);
-    let n1 = nodes[edges.start];
-    console.log(n1);
-    let n2 = nodes[edges.end];
+    let n1 = nodes[edges[i].start];
+    let n2 = nodes[edges[i].end];
 
+    stroke(0);
+    strokeWeight(3);
+    fill(0);
     line(n1.x, n1.y, n2.x, n2.y);
+
+    noStroke();
+    fill(0);
+
+    text(edges[i].weight, (n1.x + n2.x) / 2, (n1.y + n2.y) / 2);
   }
 
   // iteratively draw nodes
@@ -66,7 +72,7 @@ function addEdge() {
   let end = prompt("Enter end node..");
   let weight = prompt("Enter weight..");
 
-  edges.push({ start: start, end: end, weigth: weight });
+  edges.push({ start: start, end: end, weight: weight });
   console.log(edges);
 }
 
