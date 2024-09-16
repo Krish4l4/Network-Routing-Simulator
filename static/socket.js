@@ -45,8 +45,30 @@ function runningAlgorithm(whichalgo) {
         }
         console.log(shortestPath);
       }
+
+      if (whichalgo == "Bellman_Ford") {
+        flag = 0;
+        for (let i = 0; i < edges.length; i++) {
+          if (sourceOfBelmanFord == edges[i].start) {
+            flag = 1;
+            break;
+          }
+          if (sourceOfBelmanFord == edges[i].end) {
+            flag = 1;
+            break;
+          }
+        }
+        if (flag == 0) {
+          document.getElementById("messages").innerHTML = "No link from source";
+        }
+      }
       algo = "Final";
       socket.close();
+
+      dateFinal = new Date();
+      console.log(
+        "Simulation execution time: " + (dateFinal - dateInital) / 1000 + " sec"
+      );
     } else {
       trackBellmanFordCosts = msg.dist; // used when the final step is returned: tracks the cost
       var previousTable = document.getElementById("algorithmTable");

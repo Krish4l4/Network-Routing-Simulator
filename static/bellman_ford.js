@@ -11,4 +11,5 @@ function runBellmanFord() {
     source: source,
     state: stateChoosen,
   });
+  dateInital = new Date();
 }

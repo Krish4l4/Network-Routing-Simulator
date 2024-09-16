@@ -15,6 +15,8 @@ let shortestPath = [];
 let whichalgo;
 let sourceOfBelmanFord;
 let trackBellmanFordCosts;
+let dateInital;
+let dateFinal;
 
 let stateChoosen = "Undirected";
 
@@ -28,6 +30,11 @@ function setup() {
     .addEventListener("submit", function (event) {
       event.preventDefault();
       validateForm();
+    });
+  document
+    .getElementById("formCancelbutton")
+    .addEventListener("click", function () {
+      document.getElementById("myForm").style.display = "none";
     });
   document
     .getElementById("addEdgeBtn")
@@ -107,7 +114,11 @@ function draw() {
           }
         }
       } else {
-        stroke(231, 76, 60);
+        if (edges[i].visited == true) {
+          stroke(231, 76, 60);
+        } else {
+          stroke(0);
+        }
       }
     } else if (edges[i].visited == true) {
       stroke(231, 76, 60);
@@ -215,6 +226,7 @@ function draw() {
  * Removes items from nodes and edges, also clears canvas
  */
 function clearCanvas() {
+  document.getElementById("myForm").style.display = "none";
   nodes = [];
   edges = [];
   clear();

@@ -40,7 +40,9 @@ def handle_dijkstra(dataValues):
         weight = edge["weight"]
         G.add_edge(str(start), str(end), weight)
     global path
+    start_time = time.perf_counter()
     path = G.shortest_path(str(dataValues['source']),str(dataValues['destination']))
+    print("Execution time: " + str((time.perf_counter()-start_time) * 1000)+ " ms")
     print(path)
 
 
@@ -60,7 +62,9 @@ def handle_dijkstra(dataValues):
         weight = edge["weight"]
         G.add_edge(str(start), str(end), weight)
     global path
+    start_time = time.perf_counter()
     path = G.bellman_calculation(str(dataValues['source']))
+    print("Execution time: "+ str((time.perf_counter()-start_time) * 1000) +" ms")
     print(path)
 
 
@@ -68,7 +72,6 @@ def handle_dijkstra(dataValues):
 @socketio.on('step')
 def get_step():
     global current_step
-    print(current_step)
 
     if(current_step < len(steps) ):
         # float('inf') cannot be sent to the client so convert it

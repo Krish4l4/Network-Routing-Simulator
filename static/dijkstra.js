@@ -19,4 +19,5 @@ function runDijkstra() {
     destination: destination,
     state: stateChoosen,
   });
+  dateInital = new Date();
 }
