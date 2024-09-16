@@ -8,11 +8,20 @@ let edges = [];
 let draggingNode = null;
 
 function setup() {
-  createCanvas(720, 480); // global variable initiated: width = 720; height = 480;
+  let canvas = createCanvas(720, 480); // global variable initiated: width = 720; height = 480;
+  canvas.parent("canvasContainer");
 
   // Add Event listener to attach event handler to specified element
   document.getElementById("addNodeBtn").addEventListener("click", addNode);
-  document.getElementById("addEdgeBtn").addEventListener("click", addEdge);
+  document
+    .getElementById("myForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+      validateForm();
+    });
+  document
+    .getElementById("addEdgeBtn")
+    .addEventListener("click", addEdgeViewer);
 }
 
 function draw() {
@@ -117,6 +126,8 @@ function mouseReleased() {
 }
 
 function addNode() {
+  document.getElementById("myForm").style.display = "none"; // hide addEdgeViewer Form
+
   var x = random(50, width - 50);
   var y = random(50, height - 50);
 
@@ -136,12 +147,49 @@ function addNode() {
   nodes.push({ x: x, y: y });
 }
 
-function addEdge() {
-  let start = prompt("Enter start node..");
-  let end = prompt("Enter end node..");
-  let weight = prompt("Enter weight..");
+function addEdgeViewer() {
+  if (nodes.length < 2) {
+    alert("Only one node. Cannot add edge!!");
+  } else {
+    document.getElementById("myForm").style.display = "block";
+    document.getElementById("startNode").setAttribute("max", nodes.length - 1);
+    document.getElementById("endNode").setAttribute("max", nodes.length - 1);
 
-  edges.push({ start: start, end: end, weight: weight });
+    document.getElementById("startNode").value = "";
+    document.getElementById("endNode").value = "";
+    document.getElementById("weight").value = "";
+  }
+}
+
+function validateForm() {
+  let start = document.getElementById("startNode").value;
+  let end = document.getElementById("endNode").value;
+  let weight = document.getElementById("weight").value;
+
+  if (start == end) {
+    document.getElementById("err").innerHTML =
+      "Start node should not be equal to the end node.";
+    return false;
+  }
+  addEdge(start, end, weight);
+}
+
+function addEdge(start, end, weight) {
+  let flag = 0;
+  for (let i = 0; i < edges.length; i++) {
+    if (edges[i].start == start && edges[i].end == end) {
+      edges[i].weight = weight;
+      flag = 1;
+    } else if (edges[i].start == end && edges[i].end == start) {
+      edges[i].weight = weight;
+      flag = 1;
+    }
+  }
+  if (flag == 0) {
+    edges.push({ start: start, end: end, weight: weight });
+  }
+
+  document.getElementById("myForm").style.display = "none";
 }
 
 // bool condition for algo running or not , to stop user from adding nodes during execution
