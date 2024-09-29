@@ -16,6 +16,7 @@ function setup() {
     .getElementById("addEdgeBtn")
     .addEventListener("click", addEdgeViewer);
   document.getElementById("clear").addEventListener("click", clearCanvas);
+  document.getElementById("dijkstra").addEventListener("click", runDijkstra);
 }
 
 function draw() {
@@ -84,6 +85,7 @@ function addEdgeViewer() {
     alert("Only one node. Cannot add edge!!");
   } else {
     document.getElementById("myForm").style.display = "block";
+    document.getElementById("err").value = "";
 
     document.getElementById("startNode").setAttribute("max", nodes.length - 1);
     document.getElementById("endNode").setAttribute("max", nodes.length - 1);
@@ -97,9 +99,9 @@ function addEdgeViewer() {
 // validates whether start is equall to end or not
 // if validates passes to addEdge()
 function validateForm() {
-  let start = document.getElementById("startNode").value;
-  let end = document.getElementById("endNode").value;
-  let weight = document.getElementById("weight").value;
+  let start = parseInt(document.getElementById("startNode").value);
+  let end = parseInt(document.getElementById("endNode").value);
+  let weight = parseInt(document.getElementById("weight").value);
 
   if (start == end) {
     document.getElementById("err").innerHTML =
@@ -125,9 +127,12 @@ function addEdge(start, end, weight) {
     }
   }
   if (flag == 0) {
-    edges.push({ start: start, end: end, weight: weight });
+    edges.push({
+      start: parseInt(start),
+      end: parseInt(end),
+      weight: parseInt(weight),
+    });
   }
-
   document.getElementById("myForm").style.display = "none";
 }
 
@@ -140,6 +145,34 @@ function clearCanvas() {
   clear();
   background(230); // additional clear
 }
+
+function runDijkstra() {
+  var socket = io();
+  socket.on("connect", function () {
+    console.log("Connected to server");
+  });
+  socket.on("message", function (msg) {
+    console.log("Message received" + msg);
+  });
+  socket.on("disconnect", function () {
+    console.log("Disconnected form server");
+  });
+  socket.send(nodes, edges);
+}
+
+// function runDijkstra() {
+//   fetch("/process-dijkstra", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({ nodes: nodes, edges: edges }),
+//   })
+//     .then((response) => response.text())
+//     .catch((error) => {
+//       console.error("Error: ", error);
+//     });
+// }
 
 // bool condition for algo running or not , to stop user from adding nodes during execution
 //
