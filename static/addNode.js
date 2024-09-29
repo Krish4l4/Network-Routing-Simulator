@@ -10,7 +10,7 @@ function addNode() {
    */
   for (var i = 0; i < nodes.length; i++) {
     let d = dist(x, y, nodes[i].x, nodes[i].y);
-    if (d < 40) {
+    if (d < radius * 2) {
       var x = random(50, width - 50);
       var y = random(50, height - 50);
       i = 0;

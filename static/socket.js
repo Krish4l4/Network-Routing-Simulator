@@ -27,6 +27,7 @@ function runningAlgorithm(whichalgo) {
   } else if (whichalgo == "Bellman_Ford") {
     runBellmanFord();
   }
+
   socket.on("server", function (msg) {
     console.log(msg);
 
