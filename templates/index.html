@@ -1,150 +1,118 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Network Routing Simulator</title>
-    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}" />
-    <link
-      rel="stylesheet"
-      href="{{url_for('static', filename='bootstrap-5.3.3-dist/css/bootstrap.min.css')}}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{url_for('static',filename='bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css')}}"
-    />
-  </head>
-  <body>
-    <section class="implementation container-fluid">
+{% extends "base.html" %} {% block title %} Network Routing Simulator {%
+endblock %} {% block content %}
+
+<section class="implementation container">
+  <div class="row py-2">
+    <div id="stateDenoterButton" class="mt-4 col-12">
+      <button
+        type="button"
+        class="btn btn-outline-primary active"
+        id="undirectedButton"
+      >
+        Undirected graph
+      </button>
+      <button type="button" class="btn btn-outline-primary" id="directedButton">
+        Directed graph
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6 col-sm-12 col-md-12">
       <div class="row py-2">
-        <div id="stateDenoterButton" class="mt-4 col-12">
-          <button
-            type="button"
-            class="btn btn-outline-primary active"
-            id="undirectedButton"
-          >
-            Undirected graph
-          </button>
-          <button
-            type="button"
-            class="btn btn-outline-primary"
-            id="directedButton"
-          >
-            Directed graph
-          </button>
+        <div class="col">
+          <div id="canvasContainer"></div>
         </div>
       </div>
 
+      <div class="row py-2">
+        <div class="buttons_list initialButtons col-12" id="upperButtons">
+          <button id="addNodeBtn" class="btn btn-outline-primary">
+            Add Node
+          </button>
+          <button id="addEdgeBtn" class="btn btn-outline-primary">
+            Add Edge
+          </button>
+          <button class="btn btn-outline-primary" id="dijkstra">
+            Run Dijkstra
+          </button>
+          <button class="btn btn-outline-primary" id="bellman-ford">
+            Run Bellman-Ford
+          </button>
+          <button class="btn btn-outline-primary" id="clear">Clear</button>
+        </div>
+      </div>
+
+      <div class="row py-2">
+        <div class="buttons_list col-12" id="lowerButtons">
+          <button class="btn btn-outline-primary" id="stepAlgorithm">
+            Step
+          </button>
+          <button class="btn btn-outline-danger" id="exitAlgorithm">
+            Exit Simulation
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="row py-2">
+        <div id="algorithmTracker" class="col-6">
+          <table id="algorithmTable" class="table"></table>
+        </div>
+      </div>
       <div class="row">
-        <div class="col-lg-6 col-sm-12 col-md-12">
-          <div class="row py-2">
-            <div class="col">
-              <div id="canvasContainer"></div>
-            </div>
+        <form
+          method="post"
+          class="border shadow rounded col-lg-6 col-md-6 col-sm-6 col-xs-12"
+          id="myForm"
+        >
+          <div class="form-group p-2">
+            <label for="startNode">Start Node:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="startNode"
+              name="startNode"
+              min="0"
+              required
+            />
           </div>
-
-          <div class="row py-2">
-            <div class="buttons_list initialButtons col-12" id="upperButtons">
-              <button id="addNodeBtn" class="btn btn-outline-primary">
-                Add Node
-              </button>
-              <button id="addEdgeBtn" class="btn btn-outline-primary">
-                Add Edge
-              </button>
-              <button class="btn btn-outline-primary" id="dijkstra">
-                Run Dijkstra
-              </button>
-              <button class="btn btn-outline-primary" id="bellman-ford">
-                Run Bellman-Ford
-              </button>
-              <button class="btn btn-outline-primary" id="clear">Clear</button>
-            </div>
+          <div class="form-group p-2">
+            <label for="endNode">End Node:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="endNode"
+              name="endNode"
+              min="0"
+              required
+            />
           </div>
-
-          <div class="row py-2">
-            <div class="buttons_list col-12" id="lowerButtons">
-              <button class="btn btn-outline-primary" id="stepAlgorithm">
-                Step
-              </button>
-              <button class="btn btn-outline-danger" id="exitAlgorithm">
-                Exit Simulation
-              </button>
-            </div>
+          <div class="form-group p-2">
+            <label for="weight">Weight:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="weight"
+              name="weight"
+              required
+            />
           </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="row py-2">
-            <div id="algorithmTracker" class="col-6">
-              <table id="algorithmTable" class="table"></table>
-            </div>
+          <i><span id="err"></span></i>
+          <div class="p-2">
+            <button type="submit" class="btn btn-success" id="formbutton">
+              Submit
+            </button>
+            <button type="button" class="btn btn-danger" id="formCancelbutton">
+              Cancel
+            </button>
           </div>
-          <div class="row">
-            <form
-              method="post"
-              class="border shadow rounded col-lg-6 col-md-6 col-sm-6 col-xs-12"
-              id="myForm"
-            >
-              <div class="form-group p-2">
-                <label for="startNode">Start Node:</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="startNode"
-                  name="startNode"
-                  min="0"
-                  required
-                />
-              </div>
-              <div class="form-group p-2">
-                <label for="endNode">End Node:</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="endNode"
-                  name="endNode"
-                  min="0"
-                  required
-                />
-              </div>
-              <div class="form-group p-2">
-                <label for="weight">Weight:</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="weight"
-                  name="weight"
-                  required
-                />
-              </div>
-              <i><span id="err"></span></i>
-              <div class="p-2">
-                <button type="submit" class="btn btn-success" id="formbutton">
-                  Submit
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-danger"
-                  id="formCancelbutton"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        </form>
       </div>
+    </div>
+  </div>
 
-      <div id="messages" class="row py-2"></div>
-    </section>
+  <div id="messages" class="row py-2"></div>
+</section>
 
-    <script src="{{url_for('static',filename='p5/p5.min.js')}}"></script>
-    <script src="{{url_for('static',filename='bootstrap-5.3.3-dist/js/bootstrap.min.js')}}"></script>
-    <script src="{{url_for('static', filename = 'socket-io/socket.io.min.js')}}"></script>
-    <script src="{{url_for('static',filename='addNode.js')}}"></script>
-    <script src="{{url_for('static',filename='addEdge.js')}}"></script>
-    <script src="{{url_for('static',filename='dijkstra.js')}}"></script>
-    <script src="{{url_for('static',filename='bellman_ford.js')}}"></script>
-    <script src="{{url_for('static',filename='socket.js')}}"></script>
-    <script src="{{url_for('static',filename='behaviour.js')}}"></script>
-  </body>
-</html>
+{% endblock %}

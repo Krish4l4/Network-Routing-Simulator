@@ -1,25 +1,6 @@
-/* #canvasContainer {
-  margin-top: 10px;
-  margin-left: 10px;
-} */
-
 #myForm {
   display: none;
-  /* position: absolute;
-  left: 800px;
-  */
 }
-
-/* #algorithmTracker {
-  position: absolute;
-  left: 800px;
-  width: 500px;
-} */
-/* 
-.buttons_list {
-  margin-top: 10px;
-  margin-left: 10px;
-} */
 
 #err {
   color: #ff0800;
