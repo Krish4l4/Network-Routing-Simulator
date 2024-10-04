@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block title %} Network Routing Simulator {%
 endblock %} {% block content %}
 
-<section class="implementation container">
+<section class="implementation container-fluid">
   <div class="row py-2">
     <div id="stateDenoterButton" class="mt-4 col-12">
       <button
@@ -9,9 +9,11 @@ endblock %} {% block content %}
         class="btn btn-outline-primary active"
         id="undirectedButton"
       >
+        <span id="udSpan"><i class="fa-solid fa-star"></i></span>
         Undirected graph
       </button>
       <button type="button" class="btn btn-outline-primary" id="directedButton">
+        <span id="ddSpan"></span>
         Directed graph
       </button>
     </div>
@@ -28,27 +30,35 @@ endblock %} {% block content %}
       <div class="row py-2">
         <div class="buttons_list initialButtons col-12" id="upperButtons">
           <button id="addNodeBtn" class="btn btn-outline-primary">
+            <i class="fa-solid fa-code-commit"></i>
             Add Node
           </button>
           <button id="addEdgeBtn" class="btn btn-outline-primary">
+            <i class="fa-solid fa-arrows-left-right-to-line"></i>
             Add Edge
           </button>
-          <button class="btn btn-outline-primary" id="dijkstra">
+          <button class="btn btn-outline-success" id="dijkstra">
+            <i class="fa-solid fa-paper-plane"></i>
             Run Dijkstra
           </button>
-          <button class="btn btn-outline-primary" id="bellman-ford">
+          <button class="btn btn-outline-success" id="bellman-ford">
+            <i class="fa-solid fa-plane-departure"></i>
             Run Bellman-Ford
           </button>
-          <button class="btn btn-outline-primary" id="clear">Clear</button>
+          <button class="btn btn-outline-danger" id="clear">
+            <i class="fa-solid fa-broom"></i>Clear
+          </button>
         </div>
       </div>
 
       <div class="row py-2">
         <div class="buttons_list col-12" id="lowerButtons">
-          <button class="btn btn-outline-primary" id="stepAlgorithm">
+          <button class="btn btn-outline-success" id="stepAlgorithm">
+            <i class="fa-solid fa-forward"></i>
             Step
           </button>
           <button class="btn btn-outline-danger" id="exitAlgorithm">
+            <i class="fa-solid fa-stop"></i>
             Exit Simulation
           </button>
         </div>
@@ -57,7 +67,7 @@ endblock %} {% block content %}
     <div class="col-lg-6">
       <div class="row py-2">
         <div id="algorithmTracker" class="col-6">
-          <table id="algorithmTable" class="table"></table>
+          <table id="algorithmTable" class="table border border-4"></table>
         </div>
       </div>
       <div class="row">

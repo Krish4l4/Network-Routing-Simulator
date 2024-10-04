@@ -75,7 +75,9 @@ function runningAlgorithm(whichalgo) {
       var previousTable = document.getElementById("algorithmTable");
       previousTable
         .querySelector("tbody")
-        .children.forEach((child) => child.classList.remove("table-active"));
+        .children.forEach((child) =>
+          child.classList.remove("table-active", "table-info")
+        );
 
       for (let i = 0; i < nodes.length; i++) {
         if (msg.pre[i] == null) {
@@ -116,7 +118,7 @@ function runningAlgorithm(whichalgo) {
           cellPredecessor.appendChild(newPre);
 
           // highlight row
-          currentRow.classList.add("table-active");
+          currentRow.classList.add("table-active", "table-info");
         }
       }
     }
