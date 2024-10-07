@@ -494,4 +494,7 @@ function exitSimulation() {
   edges.forEach((edge) => (edge.visited = false));
 
   document.getElementById("messages").innerHTML = "";
+  document
+    .getElementById("messages")
+    .classList.remove("border", "backColor", "border-2");
 }

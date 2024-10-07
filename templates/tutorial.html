@@ -2,14 +2,14 @@
 content %}
 
 <div class="container mt-5">
-  <div class="row shadow">
-    <div class="col-12 border text-center p-3">
+  <div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-8 mx-auto border text-center p-3">
       <h1>Tutorial</h1>
     </div>
   </div>
 
-  <div class="row shadow mt-5">
-    <div class="col-12 border p-3">
+  <div class="row mt-5">
+    <div class="col-sm-12 col-md-12 col-lg-8 mx-auto border p-3">
       <div class="row p-3">
         <h2>Table of Contents</h2>
       </div>
@@ -60,49 +60,233 @@ content %}
             To get started, simply click the "Run Dijkstra" button or the "Run
             Bellman-Ford" button to run each respective algorithm.
           </p>
-          <figure class="figure"></figure>
+          <div class="col-lg-5 col-md-8 col-sm-8 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/algorithm_buttons.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">Algorithm Buttons</figcaption>
+            </figure>
+          </div>
           <p>
             After you clicked either button, depending on the algorithm you
             selected, either one or two pop-up boxes will appear asking for
-            information.
+            information. If you chose Djikstra's algorithm, then two pop-ups
+            will appear, asking for the start and end node respectively:
           </p>
-          <p>
-            If you chose Djikstra's algorithm, then two pop-ups will appear,
-            asking for the start and end node respectively:
-          </p>
-          <figure class="figure"></figure>
-          <figure class="figure"></figure>
+
+          <div class="col-lg-3 col-md-5 col-sm-4 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/enter_start_node.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">Start Node Pop-up</figcaption>
+            </figure>
+          </div>
+          <div class="col-lg-3 col-md-8 col-sm-4 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/enter_destination_node.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">End Node Pop-up</figcaption>
+            </figure>
+          </div>
           <p>
             Otherwise if you choose Bellman-Ford's algorithm, then it will only
-            ask for the start node. Please enter an integer corresponding to the
-            node.
+            ask for the start node.
+            <mark>
+              Please enter an integer corresponding to the node's number.
+            </mark>
           </p>
-          <figure class="figure"></figure>
-
-          <h4 id="traversing">Traversing Through the Algorithm</h4>
+          <h4 id="traversing" class="mt-4">Traversing Through the Algorithm</h4>
           <p>
             Once you have entered the input information correctly, The
             visualizer will enter into animation mode, which will visually
             display the chosen algorithm step by step. To control the stage of
             animation mode two control buttons will be made available.
           </p>
-          <h4 id="wrapping">Wrapping up the Algorithm</h4>
+          <div class="col-lg-4 col-md-5 col-sm-8 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/animation_control_buttons.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">
+                Animation Control Buttons
+              </figcaption>
+            </figure>
+          </div>
+          <p>
+            You should now also see a table appear which details the current
+            trace of the selected algorithm.
+          </p>
+          <div class="col-lg-5 col-md-7 col-sm-8 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/algorithm_step_0.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">
+                Algorithm Tracker Table Upon Start of an Algorithm
+              </figcaption>
+            </figure>
+          </div>
+          <p>
+            By pressing the "Step" button, it will proceed one step in the
+            chosen algorithm, updating the table (highlighted in table) and also
+            providing a visual representation in the graph.
+          </p>
+          <div class="col-lg-5 col-md-7 col-sm-8 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/algorithm_step_1.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">
+                Algorithm Tracker After One Step of an Algorithm
+              </figcaption>
+            </figure>
+          </div>
+          <h4 id="wrapping" class="mt-4">Wrapping up the Algorithm</h4>
+          You can continue to press the "Step" button to go through the chosen
+          algorithm until it finishes. By then, the graph will show the result
+          of the algorithm and the table will be completed.
+          <div class="col-lg-5 col-md-7 col-sm-8 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/bellman_final.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">
+                Graph After Completion of Bellman-Ford Algorithm in Undirected
+                Graph. The Cost of Each Node from the Start Node is Displayed.
+              </figcaption>
+            </figure>
+          </div>
+          <div class="col-lg-5 col-md-7 col-sm-8 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/dijkstra_final.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">
+                Graph After Completion of Dijkstra's Algorithm in Directed
+                Graph.The Optimal Path form the Start Node to the End Node is
+                Highlighted in Green.
+              </figcaption>
+            </figure>
+          </div>
+          <p>
+            <mark>
+              You can then press the "Exit Animation" button to leave animation
+              mode and return back to edit mode.
+            </mark>
+          </p>
         </div>
       </div>
-
       <hr class="border border-secondary border-2 opacity-50" />
       <!-- Editing the Network -->
       <div class="row mt-5">
-        <div class="col-12 p-3"><h3 id="editing">Editing the Network</h3></div>
+        <div class="col-12 p-3">
+          <h3 id="editing">Editing the Network</h3>
+          <p>
+            By default, there will be a pre-made network (undirected) made for
+            you when you load the page. But, you can perform edit operations to
+            modfiy the graph or create your very own network.
+          </p>
+        </div>
       </div>
 
       <!-- Editing the Network -->
       <div class="row mt-2">
         <div class="col-12 p-3">
-          <h4 id="state">Graph State</h4>
-          <h4 id="node">Add Node</h4>
-          <h4 id="edge">Add Edge</h4>
           <h4 id="clear">Clear</h4>
+          <p>Press the "Clear" button to wipe the network</p>
+          <div class="col-lg-3 col-md-5 col-sm-4 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/clear_button.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">Clear Button</figcaption>
+            </figure>
+          </div>
+          <h4 id="state">Graph State</h4>
+          There are two states for our network.
+          <ul>
+            <li>Unidrected Graph(default)</li>
+            <li>Directed Graph</li>
+          </ul>
+          <p>
+            The state is represented by a 'Star' icon in the the left of the
+            buttons. The state currently being selected is highlighted in blue
+            color.
+          </p>
+          <div class="col-lg-3 col-md-5 col-sm-4 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/state_buttons.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">
+                Initial State of Network (Undirected)
+              </figcaption>
+            </figure>
+          </div>
+          <p>
+            To change the state to Directed, simply click on the "Directed
+            Graph" button.Then it will be highlighted by blue, also "Undirected
+            Grap" button will be unselected.
+          </p>
+          <div class="col-lg-3 col-md-5 col-sm-4 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/state_buttons_stateChanged.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">
+                State changed to Directed Graph
+              </figcaption>
+            </figure>
+          </div>
+          <h4 id="node">Add Node</h4>
+          <p>
+            To add a node to the network, simply click on the "Add Node" button.
+            A node will be then generated with a number at its center.
+          </p>
+          <div class="col-lg-3 col-md-5 col-sm-4 mx-auto">
+            <figure class="figure text-center">
+              <img
+                src="{{url_for('static', filename='assets/add_node.png')}}"
+                class="img-fluid mx-auto d-block"
+              />
+              <figcaption class="fst-italic">Add Node Button</figcaption>
+            </figure>
+          </div>
+          <p>You can also drag the nodes anywhere on the network editor.</p>
+          <h4 id="edge">Add Edge</h4>
+          <p>
+            To create an edge, click the "Add Edge" Button. You will be provided
+            with a form where you can input the start node, end node and weight
+            of the edge.
+          </p>
+          <ul type="square">
+            <li>
+              <mark
+                >Provide the Start Node and End Node as integer number marked
+                within the node in the network.</mark
+              >
+            </li>
+            <li class="mt-1">
+              <mark
+                >You can only enter negative weight for directed graph of
+                Bellman-Ford Algorithm.</mark
+              >
+            </li>
+          </ul>
         </div>
       </div>
     </div>

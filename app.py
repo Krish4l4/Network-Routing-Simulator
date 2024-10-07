@@ -12,7 +12,7 @@ path = []
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template('index.html', page_name='index')
 
 @app.route("/tutorial")
 def tutorial():
