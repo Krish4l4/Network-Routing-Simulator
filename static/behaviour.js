@@ -151,13 +151,11 @@ function runDijkstra() {
   socket.on("connect", function () {
     console.log("Connected to server");
   });
-  socket.on("message", function (msg) {
-    console.log("Message received" + msg);
-  });
   socket.on("disconnect", function () {
-    console.log("Disconnected form server");
+    console.log("Disconnected from server");
   });
-  socket.send(nodes, edges);
+
+  socket.emit("process_dijkstra", edges);
 }
 
 // function runDijkstra() {
