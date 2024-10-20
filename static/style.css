@@ -9,6 +9,12 @@
   left: 800px;
 }
 
+#algorithmTable {
+  position: absolute;
+  left: 800px;
+  width: 500px;
+}
+
 .buttons_list {
   margin-top: 10px;
   margin-left: 10px;
@@ -17,4 +23,8 @@
 #err {
   color: #ff0800;
   margin-left: 12px;
+}
+
+#stepAlgorithm {
+  display: none;
 }
