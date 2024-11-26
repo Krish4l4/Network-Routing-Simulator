@@ -6,6 +6,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
+current_step = 0
+
 
 @app.route("/")
 def index():
@@ -16,7 +18,7 @@ def handle_connect():
     print("Connected")
 
 @socketio.on('disconnect')
-def handel_disconnect():
+def handle_disconnect():
     print("Disconnected")
 
 
@@ -24,6 +26,7 @@ def handel_disconnect():
 def handle_dijkstra(dataValues):
     print(dataValues)
     G = Graph()
+    G.reset()
 
     for edge in dataValues['edges']:
         start = edge["start"]
@@ -34,12 +37,18 @@ def handle_dijkstra(dataValues):
 
 @socketio.on('step')
 def get_step():
-    if(handle_dijkstra):
-        current_step = 0
-        if(current_step < len(steps)):
-            emit('server',{'dist':steps[current_step]['dist'], 'pre':steps[current_step]['pre']})
-            current_step+=1
+    global current_step
+    print(steps) # clears steps of pervious things
 
+    if(current_step < len(steps)):
+        print(current_step)
+        print(steps[current_step]['dist'], steps[current_step]['pre'])
+        emit('server',{'dist':steps[current_step]['dist'], 'pre':steps[current_step]['pre']})
+        current_step+=1
+
+@socketio.on('clearValues')
+def handle_clear():
+    steps.clear() # clears steps of pervious things
 
 if __name__ == '__main__':
     print("Starting server..")

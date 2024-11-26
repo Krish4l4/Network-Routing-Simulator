@@ -1,0 +1,18 @@
+1. Cannot add egde if only one node is present
+2. multiple edge not possible (adjust link cost)
+3. check each and every thing user does in the system
+    - open browser( user see buttons, and a canvas )
+    - addNode ( node must come inside canvas, node should not overlap, node is made draggable-highlighted(but not overlap ), node is named uniquely, *node cannot be added if algorithm in running )
+    - addEdge (no add if only one node, overwrite the edge cost if pre-existing node exist, cannot add if algo is running, )
+
+
+
+Dijksta test:
+	Graph:
+		{'0': {'1': 5, '2': 8}, '1': {'0': 5, '2': 9, '3': 2}, '2': {'0': 8, '1': 9, '3': 6}, '3': {'1': 2, '2': 6}}
+	Test:
+		{'0': 0, '1': 5, '2': inf, '3': inf} {'0': None, '1': '0', '2': None, '3': None}
+    {'0': 0, '1': 5, '2': 8, '3': inf} {'0': None, '1': '0', '2': '0', '3': None}
+    {'0': 0, '1': 5, '2': 8, '3': 7} {'0': None, '1': '0', '2': '0', '3': '1'}
+    Final Path:
+        ['0', '1', '3']
