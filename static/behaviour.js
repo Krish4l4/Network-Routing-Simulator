@@ -159,7 +159,6 @@ function clearCanvas() {
 }
 
 function generateTable(source) {
-  console.log(source);
   table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
   nodes.forEach((node) => {
     if (node.name == source) {
@@ -181,6 +180,7 @@ function runDijkstra() {
   socket.on("connect", function () {
     console.log("Connected to server");
   });
+
   socket.emit("process_dijkstra", {
     edges: edges,
     source: source,
@@ -190,18 +190,23 @@ function runDijkstra() {
   // event sent by server
   socket.on("server", function (msg) {
     console.log(msg);
-    console.log(msg.dist);
-    console.log(msg.pre);
 
     table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
     for (let i = 0; i < nodes.length; i++) {
+      if (msg.pre[i] == null) {
+        msg.pre[i] = "nil";
+      }
       table += `<tr><td>${i}</td><td>${msg.dist[i]}</td><td>${msg.pre[i]}</td></tr>`;
     }
     document.getElementById("algorithmTable").innerHTML = table;
   });
 
-  socket.on("disconnect", function () {
+  socket.on("disconnect", function (reason, details) {
     console.log("Disconnected from server");
+    console.log(reason);
+    console.log(details.message);
+    console.log(details.description);
+    console.log(details.context);
   });
 }
 

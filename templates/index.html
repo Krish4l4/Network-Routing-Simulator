@@ -13,10 +13,6 @@
       rel="stylesheet"
       href="{{url_for('static',filename='bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css')}}"
     />
-
-    <script src="{{url_for('static',filename='p5/p5.min.js')}}"></script>
-
-    <script src="{{url_for('static',filename='behaviour.js')}}"></script>
   </head>
   <body>
     <div id="canvasContainer">
@@ -83,7 +79,9 @@
       <button class="btn btn-outline-primary" id="stepAlgorithm">Step</button>
     </div>
 
+    <script src="{{url_for('static',filename='p5/p5.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap-5.3.3-dist/js/bootstrap.min.js')}}"></script>
     <script src="{{url_for('static', filename = 'socket-io/socket.io.min.js')}}"></script>
+    <script src="{{url_for('static',filename='behaviour.js')}}"></script>
   </body>
 </html>
