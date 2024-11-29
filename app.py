@@ -8,6 +8,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 current_step = 0
+path = []
 
 
 @app.route("/")
@@ -34,19 +35,26 @@ def handle_dijkstra(dataValues):
         end = edge["end"]
         weight = edge["weight"]
         G.add_edge(str(start), str(end), weight)
-    print(G.shortest_path(str(dataValues['source']),str(dataValues['destination'])))
+    global path
+    path = G.shortest_path(str(dataValues['source']),str(dataValues['destination']))
+    print(path)
+
 
 @socketio.on('step')
 def get_step():
     global current_step
 
     if(current_step < len(steps) ):
+        # float('inf') cannot be sent to the client so convert it
         for key,value in steps[current_step]['dist'].items():
             if( value == float('inf')):
                 steps[current_step]['dist'][key]= "inf"
 
-        emit('server',{'dist':steps[current_step]['dist'], 'pre':steps[current_step]['pre']})
+        emit('server',{'dist':steps[current_step]['dist'], 'pre':steps[current_step]['pre'], 'current_node':steps[current_step]['currentNode'], 'neighbor':steps[current_step]['neighbor']})
         current_step+=1
+    elif current_step >= len(steps):
+        emit('server',{'data': "Stop", 'path': path})
+        
 
 @socketio.on('clearValues')
 def handle_clear():
