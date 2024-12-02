@@ -27,10 +27,19 @@ function setup() {
     .getElementById("addEdgeBtn")
     .addEventListener("click", addEdgeViewer);
   document.getElementById("clear").addEventListener("click", clearCanvas);
-  document.getElementById("dijkstra").addEventListener("click", runDijkstra);
+  document.getElementById("dijkstra").addEventListener("click", function () {
+    if (edges.length == 0) {
+      alert("No Edges connected in graph");
+    } else {
+      runDijkstra();
+    }
+  });
   document
     .getElementById("stepAlgorithm")
     .addEventListener("click", stepUpdater);
+  document
+    .getElementById("exitAlgorithm")
+    .addEventListener("click", exitSimulation);
 }
 
 function draw() {
@@ -199,7 +208,6 @@ function clearCanvas() {
 }
 
 function generateTable(source) {
-  console.log(source);
   table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
   nodes.forEach((node) => {
     if (node.name == source) {
@@ -212,9 +220,26 @@ function generateTable(source) {
 }
 
 function runDijkstra() {
-  document.getElementById("stepAlgorithm").style.display = "block";
-  let source = parseInt(prompt("Enter source node"));
-  let destination = parseInt(prompt("Enter destination node"));
+  document.getElementById("stepAlgorithm").style.display = "inline";
+  document.getElementById("exitAlgorithm").style.display = "inline";
+  disableChild = document
+    .getElementById("upperButtons")
+    .children.forEach((child) => {
+      child.setAttribute("disabled", "");
+    });
+
+  let source;
+  let destination;
+  do {
+    source = parseInt(prompt(`Enter source node: 0-${nodes.length - 1}`));
+  } while (isNaN(source));
+
+  do {
+    destination = parseInt(
+      prompt(`Enter destination node: 0-${nodes.length - 1}`)
+    );
+  } while (isNaN(destination));
+
   generateTable(source);
 
   // algo variable initilized as connection is properly validated
@@ -224,6 +249,7 @@ function runDijkstra() {
   socket.on("connect", function () {
     console.log("Connected to server");
   });
+
   socket.emit("process_dijkstra", {
     edges: edges,
     source: source,
@@ -236,20 +262,30 @@ function runDijkstra() {
     currentNode = msg.current_node;
     neighbourNode = msg.neighbor;
 
-    table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
-    for (let i = 0; i < nodes.length; i++) {
-      table += `<tr><td>${i}</td><td>${msg.dist[i]}</td><td>${msg.pre[i]}</td></tr>`;
+
+    if (msg.data == "Stop") {
+      console.log("Closed Connection");
+      document.getElementById("stepAlgorithm").setAttribute("disabled", "");
+      socket.close();
+    } else {
+      table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
+      for (let i = 0; i < nodes.length; i++) {
+        if (msg.pre[i] == null) {
+          msg.pre[i] = "nil";
+        }
+        table += `<tr><td>${i}</td><td>${msg.dist[i]}</td><td>${msg.pre[i]}</td></tr>`;
+      }
+      document.getElementById("algorithmTable").innerHTML = table;
     }
-    document.getElementById("algorithmTable").innerHTML = table;
   });
 
-  socket.on("disconnect", function () {
+  socket.on("disconnect", function (reason, details) {
     console.log("Disconnected from server");
+    console.log(reason);
   });
 }
 
 function stepUpdater() {
-  console.log("step called");
   socket.emit("step");
 }
 

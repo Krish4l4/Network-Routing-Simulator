@@ -13,10 +13,6 @@
       rel="stylesheet"
       href="{{url_for('static',filename='bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css')}}"
     />
-
-    <script src="{{url_for('static',filename='p5/p5.min.js')}}"></script>
-
-    <script src="{{url_for('static',filename='behaviour.js')}}"></script>
   </head>
   <body>
     <div id="canvasContainer">
@@ -67,7 +63,7 @@
       <table id="algorithmTable" class="table"></table>
     </div>
 
-    <div class="buttons_list">
+    <div class="buttons_list initialButtons" id="upperButtons">
       <button id="addNodeBtn" class="btn btn-outline-primary">Add Node</button>
       <button id="addEdgeBtn" class="btn btn-outline-primary">Add Edge</button>
       <button class="btn btn-outline-primary" id="dijkstra">
@@ -79,11 +75,16 @@
       <button class="btn btn-outline-primary" id="clear">Clear</button>
     </div>
 
-    <div>
+    <div class="buttons_list" id="lowerButtons">
       <button class="btn btn-outline-primary" id="stepAlgorithm">Step</button>
+      <button class="btn btn-outline-danger" id="exitAlgorithm">
+        Exit Simulation
+      </button>
     </div>
 
+    <script src="{{url_for('static',filename='p5/p5.min.js')}}"></script>
     <script src="{{url_for('static',filename='bootstrap-5.3.3-dist/js/bootstrap.min.js')}}"></script>
     <script src="{{url_for('static', filename = 'socket-io/socket.io.min.js')}}"></script>
+    <script src="{{url_for('static',filename='behaviour.js')}}"></script>
   </body>
 </html>
