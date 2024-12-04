@@ -11,6 +11,7 @@ let table;
 let algo = "Not Running";
 let currentNode;
 let neighbourNode;
+let shortestPath;
 
 function setup() {
   createCanvas(720, 480);
@@ -84,15 +85,14 @@ function draw() {
      */
     if (dist(mouseX, mouseY, nodes[i].x, nodes[i].y) < 20 && mouseIsPressed) {
       fill(159, 226, 191); // green-like color
-      ellipse(nodes[i].x, nodes[i].y, 40, 40);
     } else {
       if (algo == "Running" && nodes[i].name == currentNode) {
-        fill(231, 76, 60);
+        fill(231, 76, 60); //red like color
         nodes[i].visited = true;
       } else if (algo == "Running" && nodes[i].name == neighbourNode) {
-        fill(241, 196, 15);
+        fill(241, 196, 15); // yellow like color
       } else if (nodes[i].visited == true) {
-        fill(231, 76, 60);
+        fill(231, 76, 60); // red
       } else {
         fill(255);
       }
@@ -259,6 +259,7 @@ function runDijkstra() {
   // event sent by server
   socket.on("server", function (msg) {
     console.log(msg);
+
     currentNode = msg.current_node;
     neighbourNode = msg.neighbor;
 
@@ -266,16 +267,44 @@ function runDijkstra() {
     if (msg.data == "Stop") {
       console.log("Closed Connection");
       document.getElementById("stepAlgorithm").setAttribute("disabled", "");
+      shortestPath = msg.path;
       socket.close();
     } else {
-      table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
+      var previousTable = document.getElementById("algorithmTable");
       for (let i = 0; i < nodes.length; i++) {
         if (msg.pre[i] == null) {
           msg.pre[i] = "nil";
         }
-        table += `<tr><td>${i}</td><td>${msg.dist[i]}</td><td>${msg.pre[i]}</td></tr>`;
+        currentRow = previousTable.rows[i + 1];
+
+        cellDistance = previousTable.rows[i + 1].cells[1];
+        cellPredecessor = previousTable.rows[i + 1].cells[2];
+
+        previousData = cellDistance.lastChild.textContent;
+        if (previousData != msg.dist[i]) {
+          previousBlock = document.createElement("span");
+          previousBlock.classList.add("text-decoration-line-through");
+          previousBlock.textContent = "  " + cellDistance.textContent;
+
+          previousPre = document.createElement("span");
+          previousPre.classList.add("text-decoration-line-through");
+          previousPre.textContent = "  " + cellPredecessor.textContent;
+
+          cellDistance.textContent = "";
+          cellPredecessor.textContent = "";
+
+          cellDistance.appendChild(previousBlock);
+          cellPredecessor.appendChild(previousPre);
+
+          var newBlock = document.createElement("span");
+          newBlock.textContent = `  ${msg.dist[i]}`;
+          cellDistance.appendChild(newBlock);
+
+          var newPre = document.createElement("span");
+          newPre.textContent = `  ${msg.pre[i]}`;
+          cellPredecessor.appendChild(newPre);
+        }
       }
-      document.getElementById("algorithmTable").innerHTML = table;
     }
   });
 
@@ -302,6 +331,7 @@ function exitSimulation() {
   algo = "Not Running";
   currentNode = null;
   neighbourNode = null;
+  shortestPath = null;
 
   nodes.forEach((node) => (node.visited = false));
   edges.forEach((edge) => (edge.visited = false));
