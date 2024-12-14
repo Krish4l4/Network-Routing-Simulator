@@ -11,7 +11,7 @@ let table;
 let algo = "Not Running";
 let currentNode;
 let neighbourNode;
-let shortestPath;
+let shortestPath = [];
 
 function setup() {
   createCanvas(720, 480);
@@ -60,6 +60,15 @@ function draw() {
     ) {
       stroke(231, 76, 60);
       edges[i].visited = true;
+    } else if (algo == "Final") {
+      for (let z = 0; z < shortestPath.length; z++) {
+        if (
+          (shortestPath[z] == n1.name && shortestPath[z + 1] == n2.name) ||
+          (shortestPath[z] == n2.name && shortestPath[z + 1] == n1.name)
+        ) {
+          stroke(34, 153, 84);
+        }
+      }
     } else if (edges[i].visited == true) {
       stroke(231, 76, 60);
     } else {
@@ -91,6 +100,17 @@ function draw() {
         nodes[i].visited = true;
       } else if (algo == "Running" && nodes[i].name == neighbourNode) {
         fill(241, 196, 15); // yellow like color
+      } else if (algo == "Final") {
+        for (let z = 0; z < shortestPath.length; z++) {
+          if (nodes[i].name == shortestPath[z]) {
+            fill(34, 153, 84);
+            nodes[i].finalpath = true;
+            break;
+          }
+        }
+        if (nodes[i].finalpath == false) {
+          fill(255);
+        }
       } else if (nodes[i].visited == true) {
         fill(231, 76, 60); // red
       } else {
@@ -127,7 +147,13 @@ function addNode() {
   }
 
   var valueOfNode = nodes.length;
-  nodes.push({ x: x, y: y, name: valueOfNode, visited: false });
+  nodes.push({
+    x: x,
+    y: y,
+    name: valueOfNode,
+    visited: false,
+    finalpath: false,
+  });
 }
 
 /**
@@ -190,6 +216,7 @@ function addEdge(start, end, weight) {
     });
   }
   document.getElementById("myForm").style.display = "none";
+  document.getElementById("err").innerHTML = "";
 }
 
 /**
@@ -268,9 +295,19 @@ function runDijkstra() {
       console.log("Closed Connection");
       document.getElementById("stepAlgorithm").setAttribute("disabled", "");
       shortestPath = msg.path;
+      if (shortestPath.length == 0) {
+        document.getElementById("messages").innerHTML =
+          "No link to destination";
+      }
+      console.log(shortestPath);
+      algo = "Final";
       socket.close();
     } else {
       var previousTable = document.getElementById("algorithmTable");
+      previousTable
+        .querySelector("tbody")
+        .children.forEach((child) => child.classList.remove("table-active"));
+
       for (let i = 0; i < nodes.length; i++) {
         if (msg.pre[i] == null) {
           msg.pre[i] = "nil";
@@ -282,6 +319,11 @@ function runDijkstra() {
 
         previousData = cellDistance.lastChild.textContent;
         if (previousData != msg.dist[i]) {
+          // For unconncted node
+          if (msg.dist[i] == null) {
+            continue;
+          }
+
           previousBlock = document.createElement("span");
           previousBlock.classList.add("text-decoration-line-through");
           previousBlock.textContent = "  " + cellDistance.textContent;
@@ -303,6 +345,9 @@ function runDijkstra() {
           var newPre = document.createElement("span");
           newPre.textContent = `  ${msg.pre[i]}`;
           cellPredecessor.appendChild(newPre);
+
+          // highlight row
+          currentRow.classList.add("table-active");
         }
       }
     }
@@ -331,8 +376,10 @@ function exitSimulation() {
   algo = "Not Running";
   currentNode = null;
   neighbourNode = null;
-  shortestPath = null;
+  shortestPath = [];
 
-  nodes.forEach((node) => (node.visited = false));
+  nodes.forEach((node) => ((node.visited = false), (node.finalpath = false)));
   edges.forEach((edge) => (edge.visited = false));
+
+  document.getElementById("messages").innerHTML = "";
 }

@@ -32,6 +32,11 @@ class Graph:
             path.append(current_node)
             current_node = predecessors[current_node]
         path.reverse()
+
+        # This means that no connection is in path properly with respect to source
+        if len(path) == 1:
+            path = []
+            
         return path
 
 
