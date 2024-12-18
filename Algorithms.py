@@ -32,6 +32,11 @@ class Graph:
             path.append(current_node)
             current_node = predecessors[current_node]
         path.reverse()
+
+        # This means that no connection is in path properly with respect to source
+        if len(path) == 1:
+            path = []
+            
         return path
 
 
@@ -114,16 +119,15 @@ def Dijkstra(graph, source):
                 print(distances, predecessors)
                 steps.append({'currentNode': current_node,'neighbor': neighbor,'dist': distances.copy(), 'pre': predecessors.copy()})
  
-    # emit('server',{'dist':distances, 'pre':predecessors})
+    print(steps)
     return distances, predecessors
 
 
 # g = Graph()
 # g.add_edge('0','1',12)
 # g.add_edge('0','2',3)
-# g.add_edge('2','1',2)
+# g.add_edge('2','1',4)
 
 
 # print(g.shortest_path('0','1'))
-# print(steps)
         

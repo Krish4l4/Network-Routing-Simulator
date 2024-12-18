@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit
+import time
 from Algorithms import *
 
 app = Flask(__name__)
@@ -7,6 +8,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 current_step = 0
+path = []
 
 
 @app.route("/")
@@ -33,18 +35,26 @@ def handle_dijkstra(dataValues):
         end = edge["end"]
         weight = edge["weight"]
         G.add_edge(str(start), str(end), weight)
-    print(G.shortest_path(str(dataValues['source']),str(dataValues['destination'])))
+    global path
+    path = G.shortest_path(str(dataValues['source']),str(dataValues['destination']))
+    print(path)
+
 
 @socketio.on('step')
 def get_step():
     global current_step
-    print(steps) # clears steps of pervious things
 
-    if(current_step < len(steps)):
-        print(current_step)
-        print(steps[current_step]['dist'], steps[current_step]['pre'])
-        emit('server',{'dist':steps[current_step]['dist'], 'pre':steps[current_step]['pre']})
+    if(current_step < len(steps) ):
+        # float('inf') cannot be sent to the client so convert it
+        for key,value in steps[current_step]['dist'].items():
+            if( value == float('inf')):
+                steps[current_step]['dist'][key]= "inf"
+
+        emit('server',{'dist':steps[current_step]['dist'], 'pre':steps[current_step]['pre'], 'current_node':steps[current_step]['currentNode'], 'neighbor':steps[current_step]['neighbor']})
         current_step+=1
+    elif current_step >= len(steps):
+        emit('server',{'data': "Stop", 'path': path})
+        
 
 @socketio.on('clearValues')
 def handle_clear():
@@ -55,11 +65,13 @@ def handle_clear():
     global path
     path = []
 
+
 @socketio.on_error_default
 def default_error_handler(e):
     print(e)
 
->>>>>>> a26c760 (Completed till Dijkstra's (all) ,can be changes in highlights)
+
+
 if __name__ == '__main__':
     print("Starting server..")
-    socketio.run(app, allow_unsafe_werkzeug=True,port=80,debug=True)
+    socketio.run(app, allow_unsafe_werkzeug=True,port=80,debug=True, log_output=True)

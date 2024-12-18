@@ -11,6 +11,7 @@ let table;
 let algo = "Not Running";
 let currentNode;
 let neighbourNode;
+let shortestPath = [];
 
 function setup() {
   createCanvas(720, 480);
@@ -27,10 +28,19 @@ function setup() {
     .getElementById("addEdgeBtn")
     .addEventListener("click", addEdgeViewer);
   document.getElementById("clear").addEventListener("click", clearCanvas);
-  document.getElementById("dijkstra").addEventListener("click", runDijkstra);
+  document.getElementById("dijkstra").addEventListener("click", function () {
+    if (edges.length == 0) {
+      alert("No Edges connected in graph");
+    } else {
+      runDijkstra();
+    }
+  });
   document
     .getElementById("stepAlgorithm")
     .addEventListener("click", stepUpdater);
+  document
+    .getElementById("exitAlgorithm")
+    .addEventListener("click", exitSimulation);
 }
 
 function draw() {
@@ -57,6 +67,15 @@ function draw() {
       // stroke(231, 76, 60);
       stroke(abs(231 * cos(frameCount * 0.1)), 76, 60);
       edges[i].visited = true;
+    } else if (algo == "Final") {
+      for (let z = 0; z < shortestPath.length; z++) {
+        if (
+          (shortestPath[z] == n1.name && shortestPath[z + 1] == n2.name) ||
+          (shortestPath[z] == n2.name && shortestPath[z + 1] == n1.name)
+        ) {
+          stroke(34, 153, 84);
+        }
+      }
     } else if (edges[i].visited == true) {
       stroke(231, 76, 60);
     } else {
@@ -82,14 +101,17 @@ function draw() {
      */
     if (dist(mouseX, mouseY, nodes[i].x, nodes[i].y) < 20 && mouseIsPressed) {
       fill(159, 226, 191); // green-like color
-      ellipse(nodes[i].x, nodes[i].y, 40, 40);
     } else {
       if (algo == "Running" && nodes[i].name == currentNode) {
-        fill(231, 76, 60);
+        fill(231, 76, 60); //red like color
         nodes[i].visited = true;
       } else if (algo == "Running" && nodes[i].name == neighbourNode) {
+
         // fill(241, 196, 15); // yellow like color
         fill(255, 255, abs(230 * cos(frameCount * 0.1)));
+
+       
+
       } else if (algo == "Final") {
         for (let z = 0; z < shortestPath.length; z++) {
           if (nodes[i].name == shortestPath[z]) {
@@ -102,7 +124,9 @@ function draw() {
           fill(255);
         }
       } else if (nodes[i].visited == true) {
+
         fill(226, 102, 88); // red
+
       } else {
         fill(255);
       }
@@ -137,7 +161,13 @@ function addNode() {
   }
 
   var valueOfNode = nodes.length;
-  nodes.push({ x: x, y: y, name: valueOfNode, visited: false });
+  nodes.push({
+    x: x,
+    y: y,
+    name: valueOfNode,
+    visited: false,
+    finalpath: false,
+  });
 }
 
 /**
@@ -200,6 +230,7 @@ function addEdge(start, end, weight) {
     });
   }
   document.getElementById("myForm").style.display = "none";
+  document.getElementById("err").innerHTML = "";
 }
 
 /**
@@ -218,7 +249,6 @@ function clearCanvas() {
 }
 
 function generateTable(source) {
-  console.log(source);
   table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
   nodes.forEach((node) => {
     if (node.name == source) {
@@ -231,9 +261,11 @@ function generateTable(source) {
 }
 
 function runDijkstra() {
+
   // clear some case if they occur
   document.getElementById("myForm").style.display = "none";
   document.getElementById("err").innerHTML = "";
+
 
   document.getElementById("stepAlgorithm").style.display = "inline";
   document.getElementById("exitAlgorithm").style.display = "inline";
@@ -264,6 +296,7 @@ function runDijkstra() {
   socket.on("connect", function () {
     console.log("Connected to server");
   });
+
   socket.emit("process_dijkstra", {
     edges: edges,
     source: source,
@@ -273,23 +306,80 @@ function runDijkstra() {
   // event sent by server
   socket.on("server", function (msg) {
     console.log(msg);
+
     currentNode = msg.current_node;
     neighbourNode = msg.neighbor;
 
-    table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
-    for (let i = 0; i < nodes.length; i++) {
-      table += `<tr><td>${i}</td><td>${msg.dist[i]}</td><td>${msg.pre[i]}</td></tr>`;
+
+    if (msg.data == "Stop") {
+      console.log("Closed Connection");
+      document.getElementById("stepAlgorithm").setAttribute("disabled", "");
+      shortestPath = msg.path;
+      if (shortestPath.length == 0) {
+        document.getElementById("messages").innerHTML =
+          "No link to destination";
+      }
+      console.log(shortestPath);
+      algo = "Final";
+      socket.close();
+    } else {
+      var previousTable = document.getElementById("algorithmTable");
+      previousTable
+        .querySelector("tbody")
+        .children.forEach((child) => child.classList.remove("table-active"));
+
+      for (let i = 0; i < nodes.length; i++) {
+        if (msg.pre[i] == null) {
+          msg.pre[i] = "nil";
+        }
+        currentRow = previousTable.rows[i + 1];
+
+        cellDistance = previousTable.rows[i + 1].cells[1];
+        cellPredecessor = previousTable.rows[i + 1].cells[2];
+
+        previousData = cellDistance.lastChild.textContent;
+        if (previousData != msg.dist[i]) {
+          // For unconncted node
+          if (msg.dist[i] == null) {
+            continue;
+          }
+
+          previousBlock = document.createElement("span");
+          previousBlock.classList.add("text-decoration-line-through");
+          previousBlock.textContent = "  " + cellDistance.textContent;
+
+          previousPre = document.createElement("span");
+          previousPre.classList.add("text-decoration-line-through");
+          previousPre.textContent = "  " + cellPredecessor.textContent;
+
+          cellDistance.textContent = "";
+          cellPredecessor.textContent = "";
+
+          cellDistance.appendChild(previousBlock);
+          cellPredecessor.appendChild(previousPre);
+
+          var newBlock = document.createElement("span");
+          newBlock.textContent = `  ${msg.dist[i]}`;
+          cellDistance.appendChild(newBlock);
+
+          var newPre = document.createElement("span");
+          newPre.textContent = `  ${msg.pre[i]}`;
+          cellPredecessor.appendChild(newPre);
+
+          // highlight row
+          currentRow.classList.add("table-active");
+        }
+      }
     }
-    document.getElementById("algorithmTable").innerHTML = table;
   });
 
-  socket.on("disconnect", function () {
+  socket.on("disconnect", function (reason, details) {
     console.log("Disconnected from server");
+    console.log(reason);
   });
 }
 
 function stepUpdater() {
-  console.log("step called");
   socket.emit("step");
 }
 
@@ -311,7 +401,10 @@ function exitSimulation() {
   algo = "Not Running";
   currentNode = null;
   neighbourNode = null;
+  shortestPath = [];
 
-  nodes.forEach((node) => (node.visited = false));
+  nodes.forEach((node) => ((node.visited = false), (node.finalpath = false)));
   edges.forEach((edge) => (edge.visited = false));
+
+  document.getElementById("messages").innerHTML = "";
 }
