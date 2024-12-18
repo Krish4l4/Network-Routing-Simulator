@@ -46,7 +46,13 @@ function setup() {
 function draw() {
   background(230);
 
-  //iterativley draw edges
+  if (algo == "Running") {
+    frameRate(24);
+  } else {
+    frameRate(60);
+  }
+
+  // iteratively draw edges
   for (let i = 0; i < edges.length; i++) {
     var n1 = nodes[edges[i].start];
     var n2 = nodes[edges[i].end];
@@ -58,7 +64,8 @@ function draw() {
       ((n1.name == currentNode && n2.name == neighbourNode) ||
         (n1.name == neighbourNode && n2.name == currentNode))
     ) {
-      stroke(231, 76, 60);
+      // stroke(231, 76, 60);
+      stroke(abs(231 * cos(frameCount * 0.1)), 76, 60);
       edges[i].visited = true;
     } else if (algo == "Final") {
       for (let z = 0; z < shortestPath.length; z++) {
@@ -99,7 +106,12 @@ function draw() {
         fill(231, 76, 60); //red like color
         nodes[i].visited = true;
       } else if (algo == "Running" && nodes[i].name == neighbourNode) {
-        fill(241, 196, 15); // yellow like color
+
+        // fill(241, 196, 15); // yellow like color
+        fill(255, 255, abs(230 * cos(frameCount * 0.1)));
+
+       
+
       } else if (algo == "Final") {
         for (let z = 0; z < shortestPath.length; z++) {
           if (nodes[i].name == shortestPath[z]) {
@@ -112,7 +124,9 @@ function draw() {
           fill(255);
         }
       } else if (nodes[i].visited == true) {
-        fill(231, 76, 60); // red
+
+        fill(226, 102, 88); // red
+
       } else {
         fill(255);
       }
@@ -247,6 +261,12 @@ function generateTable(source) {
 }
 
 function runDijkstra() {
+
+  // clear some case if they occur
+  document.getElementById("myForm").style.display = "none";
+  document.getElementById("err").innerHTML = "";
+
+
   document.getElementById("stepAlgorithm").style.display = "inline";
   document.getElementById("exitAlgorithm").style.display = "inline";
   disableChild = document
@@ -364,6 +384,11 @@ function stepUpdater() {
 }
 
 function exitSimulation() {
+  if (socket) {
+    socket.emit("clearValues");
+    socket.close();
+  }
+
   document.getElementById("algorithmTable").innerHTML = "";
   document.getElementById("stepAlgorithm").removeAttribute("disabled");
   document

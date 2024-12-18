@@ -60,9 +60,17 @@ def get_step():
 def handle_clear():
     steps.clear() # clears steps of pervious things
 
+    global current_step
+    current_step = 0
+    global path
+    path = []
+
+
 @socketio.on_error_default
 def default_error_handler(e):
     print(e)
+
+
 
 if __name__ == '__main__':
     print("Starting server..")
