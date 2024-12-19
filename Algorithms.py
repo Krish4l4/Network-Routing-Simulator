@@ -38,6 +38,10 @@ class Graph:
             path = []
             
         return path
+    
+    def bellman_calculation(self, source: str):
+        distances, predecessor = BellmanFord(self.graph, source)
+        path = []
 
 
 class MinPriorityQueue:
@@ -130,4 +134,35 @@ def Dijkstra(graph, source):
 
 
 # print(g.shortest_path('0','1'))
-        
+
+def BellmanFord(graph,source):
+    # Initialize the values of all nodes with infinity
+    distances = {node: float('inf') for node in graph}
+    predecessors = {node: None for node in graph}
+
+    distances[source] = 0
+    
+    
+
+    for vertex in graph.keys():
+        for neighbor, weight in graph[vertex].items():
+            distance = distances[vertex] + weight
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                predecessors[neighbor] = vertex
+                print(distances, predecessors)
+                steps.append({'currentNode': vertex,'neighbor': neighbor,'dist': distances.copy(), 'pre': predecessors.copy()})
+
+    # check for negative cycle
+    for vertex in graph.keys():
+        pass
+
+    return distances, predecessors
+
+
+# g = Graph()
+# g.add_edge('0','1',-1)
+# g.add_edge('0','2',3)
+# g.add_edge('2','1',4)
+# g.bellman_calculation('0')

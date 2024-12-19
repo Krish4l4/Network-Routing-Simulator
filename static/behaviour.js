@@ -12,6 +12,11 @@ let algo = "Not Running";
 let currentNode;
 let neighbourNode;
 let shortestPath = [];
+let whichalgo;
+let sourceOfBelmanFord;
+let trackBellmanFordCosts;
+
+let stateChoosen = "Undirected";
 
 function setup() {
   createCanvas(720, 480);
@@ -32,15 +37,39 @@ function setup() {
     if (edges.length == 0) {
       alert("No Edges connected in graph");
     } else {
-      runDijkstra();
+      whichalgo = "Dijkstra";
+      runningAlgorithm(whichalgo);
     }
   });
+  document
+    .getElementById("bellman-ford")
+    .addEventListener("click", function () {
+      if (edges.length == 0) {
+        alert("No Edges connected in graph");
+      } else {
+        whichalgo = "Bellman_Ford";
+        runningAlgorithm(whichalgo);
+      }
+    });
   document
     .getElementById("stepAlgorithm")
     .addEventListener("click", stepUpdater);
   document
     .getElementById("exitAlgorithm")
     .addEventListener("click", exitSimulation);
+
+  // document
+  //   .getElementById("undirectedButton")
+  //   .addEventListener("click", function () {
+  //     console.log("Undirected");
+  //     stateChoosen = "Undirected";
+  //   });
+  // document
+  //   .getElementById("directedButton")
+  //   .addEventListener("click", function () {
+  //     console.log("Directed");
+  //     stateChoosen = "Directed";
+  //   });
 }
 
 function draw() {
@@ -68,13 +97,17 @@ function draw() {
       stroke(abs(231 * cos(frameCount * 0.1)), 76, 60);
       edges[i].visited = true;
     } else if (algo == "Final") {
-      for (let z = 0; z < shortestPath.length; z++) {
-        if (
-          (shortestPath[z] == n1.name && shortestPath[z + 1] == n2.name) ||
-          (shortestPath[z] == n2.name && shortestPath[z + 1] == n1.name)
-        ) {
-          stroke(34, 153, 84);
+      if (whichalgo == "Dijkstra") {
+        for (let z = 0; z < shortestPath.length; z++) {
+          if (
+            (shortestPath[z] == n1.name && shortestPath[z + 1] == n2.name) ||
+            (shortestPath[z] == n2.name && shortestPath[z + 1] == n1.name)
+          ) {
+            stroke(34, 153, 84);
+          }
         }
+      } else {
+        stroke(231, 76, 60);
       }
     } else if (edges[i].visited == true) {
       stroke(231, 76, 60);
@@ -113,11 +146,30 @@ function draw() {
        
 
       } else if (algo == "Final") {
-        for (let z = 0; z < shortestPath.length; z++) {
-          if (nodes[i].name == shortestPath[z]) {
-            fill(34, 153, 84);
+        if (whichalgo == "Dijkstra") {
+          for (let z = 0; z < shortestPath.length; z++) {
+            if (nodes[i].name == shortestPath[z]) {
+              fill(34, 153, 84);
+              nodes[i].finalpath = true;
+              break;
+            }
+          }
+        } else {
+          if (nodes[i].name == sourceOfBelmanFord) {
+            fill(231, 76, 60); //red like color
             nodes[i].finalpath = true;
-            break;
+          }
+          for (let key in trackBellmanFordCosts) {
+            if (trackBellmanFordCosts.hasOwnProperty(key)) {
+              if (nodes[i].name == key) {
+                strokeWeight(1);
+                text(
+                  `Cost: ${trackBellmanFordCosts[key]}`,
+                  nodes[i].x,
+                  nodes[i].y + 40
+                );
+              }
+            }
           }
         }
         if (nodes[i].finalpath == false) {
@@ -142,95 +194,6 @@ function draw() {
       text(i, nodes[i].x - 10, nodes[i].y + 5);
     }
   }
-}
-
-function addNode() {
-  // push item into array: nodes
-
-  var x = random(50, width - 50);
-  var y = random(50, height - 50);
-
-  // need to be optimized
-  for (var i = 0; i < nodes.length; i++) {
-    let d = dist(x, y, nodes[i].x, nodes[i].y);
-    if (d < 40) {
-      var x = random(50, width - 50);
-      var y = random(50, height - 50);
-      i = 0;
-    }
-  }
-
-  var valueOfNode = nodes.length;
-  nodes.push({
-    x: x,
-    y: y,
-    name: valueOfNode,
-    visited: false,
-    finalpath: false,
-  });
-}
-
-/**
- * This function loads the form for edge submission
- * and sets paramters for max values that can be taken as inputs
- * also reset preloaded values to " "
- */
-function addEdgeViewer() {
-  if (nodes.length < 2) {
-    alert("Only one node. Cannot add edge!!");
-  } else {
-    document.getElementById("myForm").style.display = "block";
-    document.getElementById("err").value = "";
-
-    document.getElementById("startNode").setAttribute("max", nodes.length - 1);
-    document.getElementById("endNode").setAttribute("max", nodes.length - 1);
-
-    document.getElementById("startNode").value = "";
-    document.getElementById("endNode").value = "";
-    document.getElementById("weight").value = "";
-  }
-}
-
-// validates whether start is equall to end or not
-// if validates passes to addEdge()
-function validateForm() {
-  let start = parseInt(document.getElementById("startNode").value);
-  let end = parseInt(document.getElementById("endNode").value);
-  let weight = parseInt(document.getElementById("weight").value);
-
-  if (start == end) {
-    document.getElementById("err").innerHTML =
-      "Start node should not be equal to the end node.";
-    return false;
-  }
-  addEdge(start, end, weight);
-}
-
-/**
- * Adds new egde between nodes
- * or updates the edge's weight between the nodes if already present
- */
-function addEdge(start, end, weight) {
-  let flag = 0;
-  for (let i = 0; i < edges.length; i++) {
-    if (edges[i].start == start && edges[i].end == end) {
-      edges[i].weight = weight;
-      flag = 1;
-    } else if (edges[i].start == end && edges[i].end == start) {
-      edges[i].weight = weight;
-      flag = 1;
-    }
-  }
-  if (flag == 0) {
-    edges.push({
-      start: parseInt(start),
-      end: parseInt(end),
-      weight: parseInt(weight),
-      visited: false,
-    });
-  }
-  document.getElementById("myForm").style.display = "none";
-  document.getElementById("err").innerHTML = "";
 }
 
 /**
@@ -260,125 +223,6 @@ function generateTable(source) {
   document.getElementById("algorithmTable").innerHTML = table;
 }
 
-function runDijkstra() {
-
-  // clear some case if they occur
-  document.getElementById("myForm").style.display = "none";
-  document.getElementById("err").innerHTML = "";
-
-
-  document.getElementById("stepAlgorithm").style.display = "inline";
-  document.getElementById("exitAlgorithm").style.display = "inline";
-  disableChild = document
-    .getElementById("upperButtons")
-    .children.forEach((child) => {
-      child.setAttribute("disabled", "");
-    });
-
-  let source;
-  let destination;
-  do {
-    source = parseInt(prompt(`Enter source node: 0-${nodes.length - 1}`));
-  } while (isNaN(source));
-
-  do {
-    destination = parseInt(
-      prompt(`Enter destination node: 0-${nodes.length - 1}`)
-    );
-  } while (isNaN(destination));
-
-  generateTable(source);
-
-  // algo variable initilized as connection is properly validated
-  algo = "Running";
-
-  socket = io();
-  socket.on("connect", function () {
-    console.log("Connected to server");
-  });
-
-  socket.emit("process_dijkstra", {
-    edges: edges,
-    source: source,
-    destination: destination,
-  });
-
-  // event sent by server
-  socket.on("server", function (msg) {
-    console.log(msg);
-
-    currentNode = msg.current_node;
-    neighbourNode = msg.neighbor;
-
-
-    if (msg.data == "Stop") {
-      console.log("Closed Connection");
-      document.getElementById("stepAlgorithm").setAttribute("disabled", "");
-      shortestPath = msg.path;
-      if (shortestPath.length == 0) {
-        document.getElementById("messages").innerHTML =
-          "No link to destination";
-      }
-      console.log(shortestPath);
-      algo = "Final";
-      socket.close();
-    } else {
-      var previousTable = document.getElementById("algorithmTable");
-      previousTable
-        .querySelector("tbody")
-        .children.forEach((child) => child.classList.remove("table-active"));
-
-      for (let i = 0; i < nodes.length; i++) {
-        if (msg.pre[i] == null) {
-          msg.pre[i] = "nil";
-        }
-        currentRow = previousTable.rows[i + 1];
-
-        cellDistance = previousTable.rows[i + 1].cells[1];
-        cellPredecessor = previousTable.rows[i + 1].cells[2];
-
-        previousData = cellDistance.lastChild.textContent;
-        if (previousData != msg.dist[i]) {
-          // For unconncted node
-          if (msg.dist[i] == null) {
-            continue;
-          }
-
-          previousBlock = document.createElement("span");
-          previousBlock.classList.add("text-decoration-line-through");
-          previousBlock.textContent = "  " + cellDistance.textContent;
-
-          previousPre = document.createElement("span");
-          previousPre.classList.add("text-decoration-line-through");
-          previousPre.textContent = "  " + cellPredecessor.textContent;
-
-          cellDistance.textContent = "";
-          cellPredecessor.textContent = "";
-
-          cellDistance.appendChild(previousBlock);
-          cellPredecessor.appendChild(previousPre);
-
-          var newBlock = document.createElement("span");
-          newBlock.textContent = `  ${msg.dist[i]}`;
-          cellDistance.appendChild(newBlock);
-
-          var newPre = document.createElement("span");
-          newPre.textContent = `  ${msg.pre[i]}`;
-          cellPredecessor.appendChild(newPre);
-
-          // highlight row
-          currentRow.classList.add("table-active");
-        }
-      }
-    }
-  });
-
-  socket.on("disconnect", function (reason, details) {
-    console.log("Disconnected from server");
-    console.log(reason);
-  });
-}
-
 function stepUpdater() {
   socket.emit("step");
 }
@@ -389,6 +233,7 @@ function exitSimulation() {
     socket.close();
   }
 
+  document.getElementById("myForm").style.display = "none";
   document.getElementById("algorithmTable").innerHTML = "";
   document.getElementById("stepAlgorithm").removeAttribute("disabled");
   document
