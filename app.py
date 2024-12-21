@@ -10,7 +10,6 @@ socketio = SocketIO(app)
 current_step = 0
 path = []
 
-
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -53,6 +52,7 @@ def handle_dijkstra(dataValues):
         G = Graph()
     elif(dataValues['state']=='Directed'):
         G = DirectedGraph()
+    G.reset()
 
     for edge in dataValues['edges']:
         start = edge["start"]
@@ -68,6 +68,7 @@ def handle_dijkstra(dataValues):
 @socketio.on('step')
 def get_step():
     global current_step
+    print(current_step)
 
     if(current_step < len(steps) ):
         # float('inf') cannot be sent to the client so convert it
