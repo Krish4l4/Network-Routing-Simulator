@@ -182,8 +182,6 @@ def BellmanFord(graph,source, state):
     for _ in range(len(graph)-1):
         for vertex in graph.keys():
             for neighbor, weight in graph[vertex].items():
-                print(neighbor,weight)
-
                 if distances[vertex] != float('inf'):
                     distance = distances[vertex] + weight
 
@@ -200,6 +198,7 @@ def BellmanFord(graph,source, state):
                 if distances[vertex] + weight < distances[neighbor]:
                     print("Negative Cycle")
 
+    print(steps)
     return distances, predecessors
 
 
