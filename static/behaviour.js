@@ -17,11 +17,25 @@ let sourceOfBelmanFord;
 let trackBellmanFordCosts;
 let dateInital;
 let dateFinal;
-
 let stateChoosen = "Undirected";
 
+//
+let radius;
+let fontSize;
+
 function setup() {
-  createCanvas(720, 480);
+  var height;
+  var width;
+  if (windowWidth < 768) {
+    //768 for medium and small sized devices
+    height = 300;
+    width = windowWidth;
+  } else {
+    width = 720;
+    height = 480;
+  }
+  let canvas = createCanvas(width, height);
+  canvas.parent("canvasContainer");
 
   // Add Event listener to attach event handler to specified element
   document.getElementById("addNodeBtn").addEventListener("click", addNode);
@@ -44,6 +58,14 @@ function setup() {
     if (edges.length == 0) {
       alert("No Edges connected in graph");
     } else {
+      for (let i = 0; i < edges.length; i++) {
+        if (edges[i].weight < 0) {
+          alert(
+            `For Dijkstra's Algorithm, Graph shouldn't have negative edges. There is negative edge at, ${edges[i].start}-->${edges[i].end}`
+          );
+          return false;
+        }
+      }
       whichalgo = "Dijkstra";
       runningAlgorithm(whichalgo);
     }
@@ -54,6 +76,16 @@ function setup() {
       if (edges.length == 0) {
         alert("No Edges connected in graph");
       } else {
+        if (stateChoosen == "Undirected") {
+          for (let i = 0; i < edges.length; i++) {
+            if (edges[i].weight < 0) {
+              alert(
+                `For Bellman Ford's Algorithm in undirected graph, there shouldn't be negative edges. There is negative edge at, ${edges[i].start}-->${edges[i].end}`
+              );
+              return false;
+            }
+          }
+        }
         whichalgo = "Bellman_Ford";
         runningAlgorithm(whichalgo);
       }
@@ -70,17 +102,45 @@ function setup() {
     .addEventListener("click", function () {
       console.log("Undirected Graph");
       stateChoosen = "Undirected";
+
+      document.getElementById("directedButton").classList.remove("active");
+      document.getElementById("undirectedButton").classList.add("active");
     });
   document
     .getElementById("directedButton")
     .addEventListener("click", function () {
       console.log("Directed Graph");
       stateChoosen = "Directed";
+
+      document.getElementById("directedButton").classList.add("active");
+      document.getElementById("undirectedButton").classList.remove("active");
     });
+
+  // const myCanvas = document.getElementById("algorithm_colors");
+  // const ctx = myCanvas.getContext("2d");
+
+  // ctx.beginPath();
+  // ctx.arc(15, 15, 10, 0, 2 * Math.PI);
+  // ctx.fillStyle = "red";
+  // ctx.fill();
+  // ctx.stroke();
+}
+
+function windowResized() {
+  var width = document.getElementById("canvasContainer").offsetWidth;
+  var height;
+  if (windowWidth < 768) {
+    height = 300;
+  } else {
+    height = 480;
+  }
+  resizeCanvas(width, height);
 }
 
 function draw() {
   background(230);
+  stroke(0);
+  strokeWeight(3);
 
   if (algo == "Running") {
     frameRate(24);
@@ -93,8 +153,6 @@ function draw() {
     var n1 = nodes[edges[i].start];
     var n2 = nodes[edges[i].end];
 
-    stroke(0);
-    strokeWeight(3);
     if (
       algo == "Running" &&
       ((n1.name == currentNode && n2.name == neighbourNode) ||
@@ -105,6 +163,9 @@ function draw() {
       edges[i].visited = true;
     } else if (algo == "Final") {
       if (whichalgo == "Dijkstra") {
+        if ((edges[i].visited = true)) {
+          stroke(0);
+        }
         for (let z = 0; z < shortestPath.length; z++) {
           if (
             (shortestPath[z] == n1.name && shortestPath[z + 1] == n2.name) ||
@@ -124,6 +185,12 @@ function draw() {
       stroke(231, 76, 60);
     } else {
       stroke(0);
+    }
+
+    if (windowWidth > 768) {
+      strokeWeight(3);
+    } else {
+      strokeWeight(1);
     }
 
     line(n1.x, n1.y, n2.x, n2.y);
@@ -151,9 +218,6 @@ function draw() {
 
   // iteratively draw nodes
   for (let i = 0; i < nodes.length; i++) {
-    stroke(0);
-    strokeWeight(2);
-
     /**
      * If node is dragged use green-like color
      * else, use default node color
@@ -165,12 +229,8 @@ function draw() {
         fill(231, 76, 60); //red like color
         nodes[i].visited = true;
       } else if (algo == "Running" && nodes[i].name == neighbourNode) {
-
         // fill(241, 196, 15); // yellow like color
         fill(255, 255, abs(230 * cos(frameCount * 0.1)));
-
-       
-
       } else if (algo == "Final") {
         if (whichalgo == "Dijkstra") {
           for (let z = 0; z < shortestPath.length; z++) {
@@ -202,25 +262,107 @@ function draw() {
           fill(255);
         }
       } else if (nodes[i].visited == true) {
-
         fill(226, 102, 88); // red
-
       } else {
         fill(255);
       }
     }
-    ellipse(nodes[i].x, nodes[i].y, 40, 40);
-    fill(0);
-    textSize(18);
-    strokeWeight(0);
+    if (windowWidth > 768) {
+      stroke(0);
+      strokeWeight(2);
+      radius = 20;
+      fontSize = 18;
+    } else {
+      stroke(0);
+      strokeWeight(1);
+      radius = 10;
+      fontSize = 9;
+    }
 
-    if (i < 10) {
-      text(i, nodes[i].x - 5, nodes[i].y + 5);
-    } else if (i >= 10) {
-      text(i, nodes[i].x - 10, nodes[i].y + 5);
+    ellipse(nodes[i].x, nodes[i].y, radius * 2, radius * 2);
+    fill(0);
+    textSize(fontSize);
+    strokeWeight(0);
+    /**
+     * Align the name of nodes based on their values(single & double digit numbers)
+     */
+    if (windowWidth > 768) {
+      if (i < 10) {
+        text(i, nodes[i].x - 5, nodes[i].y + 5);
+      } else if (i >= 10) {
+        text(i, nodes[i].x - 10, nodes[i].y + 5);
+      }
+    } else {
+      if (i < 10) {
+        text(i, nodes[i].x, nodes[i].y + 3);
+      } else if (i >= 10) {
+        text(i, nodes[i].x, nodes[i].y + 3);
+      }
+    }
+  }
+
+  /**
+   * Update the (x,y) postion of nodes if dragged away from orginal position
+   * Also limit the dragged postion to near the boundary of canvas
+   * And , also limit the distance between the nodes so that they dont overlapped when dragged by incompetant user
+   */
+  if (draggingNode != null) {
+    var tracker = draggingNode;
+    var flag = 0;
+
+    for (let i = 0; i < nodes.length; i++) {
+      if (i == draggingNode) {
+        continue;
+      }
+
+      if (dist(nodes[i].x, nodes[i].y, mouseX, mouseY) < radius * 2) {
+        draggingNode = null;
+        flag = 1;
+      }
+    }
+    if (flag == 0) {
+      if (mouseX > width - 50 || mouseX < 50) {
+        tracker = draggingNode;
+        draggingNode = null;
+      } else {
+        nodes[draggingNode].x = mouseX;
+      }
+      draggingNode = tracker;
+
+      if (mouseY > height - 50 || mouseY < 50) {
+        draggingNode = null;
+      } else {
+        nodes[draggingNode].y = mouseY;
+      }
     }
   }
 }
+
+// For draggable if present within node boundary
+function mousePressed() {
+  for (let i = 0; i < nodes.length; i++) {
+    if (dist(mouseX, mouseY, nodes[i].x, nodes[i].y) < radius) {
+      draggingNode = i;
+    }
+  }
+}
+
+function mouseReleased() {
+  draggingNode = null;
+}
+
+// // For draggable node for mobile touches
+// function touchStarted() {
+//   for (let i = 0; i < nodes.length; i++) {
+//     if (dist(touch.x, touch.y, nodes[i].x, nodes[i].y) < radius) {
+//       draggingNode = i;
+//     }
+//   }
+// }
+
+// function touchEnded() {
+//   draggingNode = null;
+// }
 
 /**
  * Removes items from nodes and edges, also clears canvas
@@ -255,6 +397,8 @@ function stepUpdater() {
 }
 
 function exitSimulation() {
+  console.log(edges);
+  console.log(nodes);
   if (socket) {
     socket.emit("clearValues");
     socket.close();

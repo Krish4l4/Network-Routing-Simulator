@@ -78,7 +78,7 @@ class DirectedGraph:
         return path
     
     def bellman_calculation(self, source: str):
-        distances, predecessor = BellmanFord(self.graph, source,"directed")
+        distances, predecessor = BellmanFord(self.graph, source,"Directed")
         path = []
 
 class MinPriorityQueue:

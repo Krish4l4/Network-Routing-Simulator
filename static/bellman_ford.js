@@ -3,6 +3,7 @@ function runBellmanFord() {
   do {
     source = parseInt(prompt(`Enter source node: 0-${nodes.length - 1}`));
   } while (isNaN(source));
+
   generateTable(source);
   sourceOfBelmanFord = source; // to highlight the souce node at end
 
