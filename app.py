@@ -14,6 +14,14 @@ path = []
 def index():
     return render_template('index.html')
 
+@app.route("/tutorial")
+def tutorial():
+    return render_template("tutorial.html")
+
+@app.route("/aboutus")
+def aboutus():
+    return render_template("aboutus.html")
+
 @socketio.on('connect')
 def handle_connect():
     print("Connected")

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %} Network Routing Simulator {% endblock %}</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}" />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='bootstrap-5.3.3-dist/css/bootstrap.min.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static',filename='bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css')}}"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">NRS</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/aboutus">About us</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/tutorial">Tutorial</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>{% block content %} {% endblock %}</main>
+
+    <script src="{{url_for('static',filename='p5/p5.min.js')}}"></script>
+    <script src="{{url_for('static',filename='bootstrap-5.3.3-dist/js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename = 'socket-io/socket.io.min.js')}}"></script>
+    <script src="{{url_for('static',filename='addNode.js')}}"></script>
+    <script src="{{url_for('static',filename='addEdge.js')}}"></script>
+    <script src="{{url_for('static',filename='dijkstra.js')}}"></script>
+    <script src="{{url_for('static',filename='bellman_ford.js')}}"></script>
+    <script src="{{url_for('static',filename='socket.js')}}"></script>
+    <script src="{{url_for('static',filename='behaviour.js')}}"></script>
+  </body>
+</html>
