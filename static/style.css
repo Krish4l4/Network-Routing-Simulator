@@ -1,3 +1,8 @@
+:root {
+  --primary: #183153;
+  --secondary: #18337d;
+}
+
 #myForm {
   display: none;
 }
@@ -10,4 +15,21 @@
 #stepAlgorithm,
 #exitAlgorithm {
   display: none;
+}
+
+/* footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+} */
+
+div,
+.table tr th {
+  color: var(--primary);
+}
+
+p,
+a,
+.table tr td {
+  color: var(--secondary);
 }

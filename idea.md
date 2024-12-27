@@ -14,7 +14,7 @@
 - Also algorithm tracker table
 
 - Explain the steps in graph
-> Current Node, Neighbour node, present edge beign checked, already visited node
+> Current Node, Neighbour node, present edge being checked, already visited node
 
 ### Wrapping-up algorithm
 - For bellman, cost are given along with nodes and source is highlighted

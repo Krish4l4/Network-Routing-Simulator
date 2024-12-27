@@ -111,4 +111,4 @@ def default_error_handler(e):
 
 if __name__ == '__main__':
     print("Starting server..")
-    socketio.run(app, allow_unsafe_werkzeug=True,port=5000,debug=True, log_output=True, host='192.168.1.6')
+    socketio.run(app, allow_unsafe_werkzeug=True,port=5000,debug=True, log_output=True)

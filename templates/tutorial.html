@@ -1,5 +1,112 @@
 {% extends "base.html" %} {% block title %} Tutorial {% endblock %} {% block
 content %}
-<h1>fdsajkhk</h1>
-<p>asdfasd</p>
+
+<div class="container mt-5">
+  <div class="row shadow">
+    <div class="col-12 border text-center p-3">
+      <h1>Tutorial</h1>
+    </div>
+  </div>
+
+  <div class="row shadow mt-5">
+    <div class="col-12 border p-3">
+      <div class="row p-3">
+        <h2>Table of Contents</h2>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ol>
+            <li>
+              <a href="#running">Running the Algorithm</a>
+              <ol type="a">
+                <li><a href="#initiating">Initiating the Algorithm</a></li>
+                <li>
+                  <a href="#traversing">Traversing Through the Algorithm</a>
+                </li>
+                <li><a href="#wrapping">Wrapping up the Algorithm</a></li>
+              </ol>
+            </li>
+            <li>
+              <a href="#editing">Editing the Network</a>
+              <ol type="a">
+                <li><a href="#state"></a>Graph State</li>
+                <li><a href="#node">Add Node</a></li>
+                <li><a href="#edge">Add Edge</a></li>
+                <li><a href="#clear">Clear</a></li>
+              </ol>
+            </li>
+          </ol>
+        </div>
+      </div>
+      <hr class="border border-secondary border-2 opacity-50" />
+
+      <!-- Running the Algorithm -->
+      <div class="row mt-5">
+        <div class="col-12 p-3">
+          <h3 id="running">Running the Algorithm</h3>
+          <p>The algorithms provided are:</p>
+          <ul>
+            <li>Dijkstra's Algorithm</li>
+            <li>Bellman-Ford's Algorithm</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Related with Running the Algorithm  -->
+      <div class="row mt-2">
+        <div class="col-12 p-3">
+          <h4 id="initiating">Initiating the Algorithm</h4>
+          <p>
+            To get started, simply click the "Run Dijkstra" button or the "Run
+            Bellman-Ford" button to run each respective algorithm.
+          </p>
+          <figure class="figure"></figure>
+          <p>
+            After you clicked either button, depending on the algorithm you
+            selected, either one or two pop-up boxes will appear asking for
+            information.
+          </p>
+          <p>
+            If you chose Djikstra's algorithm, then two pop-ups will appear,
+            asking for the start and end node respectively:
+          </p>
+          <figure class="figure"></figure>
+          <figure class="figure"></figure>
+          <p>
+            Otherwise if you choose Bellman-Ford's algorithm, then it will only
+            ask for the start node. Please enter an integer corresponding to the
+            node.
+          </p>
+          <figure class="figure"></figure>
+
+          <h4 id="traversing">Traversing Through the Algorithm</h4>
+          <p>
+            Once you have entered the input information correctly, The
+            visualizer will enter into animation mode, which will visually
+            display the chosen algorithm step by step. To control the stage of
+            animation mode two control buttons will be made available.
+          </p>
+          <h4 id="wrapping">Wrapping up the Algorithm</h4>
+        </div>
+      </div>
+
+      <hr class="border border-secondary border-2 opacity-50" />
+      <!-- Editing the Network -->
+      <div class="row mt-5">
+        <div class="col-12 p-3"><h3 id="editing">Editing the Network</h3></div>
+      </div>
+
+      <!-- Editing the Network -->
+      <div class="row mt-2">
+        <div class="col-12 p-3">
+          <h4 id="state">Graph State</h4>
+          <h4 id="node">Add Node</h4>
+          <h4 id="edge">Add Edge</h4>
+          <h4 id="clear">Clear</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

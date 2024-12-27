@@ -31,11 +31,68 @@ function setup() {
     height = 300;
     width = windowWidth;
   } else {
-    width = 720;
+    width = windowWidth / 2 - 20;
     height = 480;
   }
   let canvas = createCanvas(width, height);
   canvas.parent("canvasContainer");
+
+  //default values for nodes
+  nodes = [
+    {
+      x: width / 2 - 100,
+      y: height / 2 + 60,
+      name: 0,
+      visited: false,
+      finalpath: false,
+    },
+    {
+      x: width / 2 - 100,
+      y: height / 2 - 100,
+      name: 1,
+      visited: false,
+      finalpath: false,
+    },
+    {
+      x: width / 2,
+      y: height / 2,
+      name: 2,
+      visited: false,
+      finalpath: false,
+    },
+    {
+      x: width / 2,
+      y: height / 2 + 120,
+      name: 3,
+      visited: false,
+      finalpath: false,
+    },
+    {
+      x: width / 2 + 150,
+      y: height / 2 + 70,
+      name: 4,
+      visited: false,
+      finalpath: false,
+    },
+    {
+      x: width / 2 + 150,
+      y: height / 2 - 100,
+      name: 5,
+      visited: false,
+      finalpath: false,
+    },
+  ];
+
+  // default value for edges
+  edges = [
+    { start: 0, end: 2, weight: 3, visited: false },
+    { start: 2, end: 1, weight: 2, visited: false },
+    { start: 2, end: 3, weight: 3, visited: false },
+    { start: 3, end: 4, weight: 4, visited: false },
+    { start: 5, end: 4, weight: 6, visited: false },
+    { start: 1, end: 5, weight: 5, visited: false },
+    { start: 2, end: 4, weight: 7, visited: false },
+  ];
 
   // Add Event listener to attach event handler to specified element
   document.getElementById("addNodeBtn").addEventListener("click", addNode);
@@ -103,6 +160,10 @@ function setup() {
       console.log("Undirected Graph");
       stateChoosen = "Undirected";
 
+      document.getElementById("udSpan").innerHTML =
+        '<i class="fa-solid fa-star"></i>';
+      document.getElementById("ddSpan").innerHTML = "";
+
       document.getElementById("directedButton").classList.remove("active");
       document.getElementById("undirectedButton").classList.add("active");
     });
@@ -111,6 +172,10 @@ function setup() {
     .addEventListener("click", function () {
       console.log("Directed Graph");
       stateChoosen = "Directed";
+
+      document.getElementById("ddSpan").innerHTML =
+        '<i class="fa-solid fa-star"></i>';
+      document.getElementById("udSpan").innerHTML = "";
 
       document.getElementById("directedButton").classList.add("active");
       document.getElementById("undirectedButton").classList.remove("active");
@@ -138,7 +203,7 @@ function windowResized() {
 }
 
 function draw() {
-  background(230);
+  background("#e7eaf6");
   stroke(0);
   strokeWeight(3);
 
@@ -372,7 +437,7 @@ function clearCanvas() {
   nodes = [];
   edges = [];
   clear();
-  background(230); // additional clear
+  background("#e7eaf6"); // additional clear
 
   if (socket) {
     socket.emit("clearValues");
@@ -381,7 +446,8 @@ function clearCanvas() {
 }
 
 function generateTable(source) {
-  table = "<tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr>";
+  table =
+    "<thead><tr><th>Vertex</th><th>Distance</th><th>Predecessor</th></tr></thead><tbody class='table-group-divider'>";
   nodes.forEach((node) => {
     if (node.name == source) {
       table += `<tr><td>${node.name}</td><td>0</td><td>nil</td></tr>`;
@@ -389,6 +455,7 @@ function generateTable(source) {
       table += `<tr><td>${node.name}</td><td>inf</td><td>nil</td></tr>`;
     }
   });
+  table += "</tbody>";
   document.getElementById("algorithmTable").innerHTML = table;
 }
 
