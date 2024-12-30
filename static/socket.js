@@ -41,8 +41,12 @@ function runningAlgorithm(whichalgo) {
       if (whichalgo == "Dijkstra") {
         shortestPath = msg.path;
         if (shortestPath.length == 0) {
+          alert("No link to destination");
           document.getElementById("messages").innerHTML =
             "No link to destination";
+          document
+            .getElementById("messages")
+            .classList.add("border", "border-2", "backColor");
         }
         console.log(shortestPath);
       }
@@ -60,7 +64,11 @@ function runningAlgorithm(whichalgo) {
           }
         }
         if (flag == 0) {
+          alert("No link from source");
           document.getElementById("messages").innerHTML = "No link from source";
+          document
+            .getElementById("messages")
+            .classList.add("border", "border-2", "backColor");
         }
       }
       algo = "Final";

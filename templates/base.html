@@ -74,6 +74,9 @@
     <script src="{{url_for('static',filename='dijkstra.js')}}"></script>
     <script src="{{url_for('static',filename='bellman_ford.js')}}"></script>
     <script src="{{url_for('static',filename='socket.js')}}"></script>
+
+    {% if page_name == 'index' %}
     <script src="{{url_for('static',filename='behaviour.js')}}"></script>
+    {% endif %}
   </body>
 </html>
